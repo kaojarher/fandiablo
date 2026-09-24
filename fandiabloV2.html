@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>凡人修仙錄</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b0a12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🗡️%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#0b0a12;--fg:#e8e2d0;--gold:#e0b050;--jade:#3fb68b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--fg);font-family:"Noto Serif TC","PMingLiU",serif;overscroll-behavior:none;user-select:none}
+body{display:flex;flex-direction:column;align-items:center;gap:5px;padding:calc(env(safe-area-inset-top) + 4px) 4px calc(env(safe-area-inset-bottom) + 4px)}
+#h1{width:min(98vw,680px);font-size:13px;color:var(--gold)}
+#log{width:min(98vw,680px);height:4.7em;font-size:12.5px;line-height:1.18;color:#cbbfa0;overflow:hidden;background:#100c18;border:1px solid #3a3020;border-radius:6px;padding:3px 6px}
+#cw{position:relative;touch-action:none}
+canvas{display:block;width:min(98vw,50vh,680px);aspect-ratio:640/600;background:#000;border:2px solid #6a5a2a}
+#joy{position:absolute;left:8px;bottom:8px;width:110px;height:110px;border-radius:50%;background:rgba(35,29,51,.6);border:2px solid #6a5a2a}
+#joy i{position:absolute;left:30px;top:30px;width:50px;height:50px;border-radius:50%;background:#8a7030;pointer-events:none}
+#bar{display:flex;align-items:flex-end;justify-content:space-between;gap:6px;width:min(98vw,680px)}
+.orb{position:relative;flex:none;width:80px;height:80px;border-radius:50%;overflow:hidden;background:#100a0e;border:3px solid #8a7030;box-shadow:inset 0 0 14px #000}
+.orb i{position:absolute;left:0;right:0;bottom:0;height:100%}
+.orb b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:12px;text-shadow:0 0 3px #000,0 0 3px #000}
+#mid{display:grid;grid-template-columns:repeat(4,44px);gap:4px}
+button{font:inherit;font-size:18px;min-width:44px;height:44px;padding:0;background:#231d33;color:var(--fg);border:1px solid #6a5a2a;border-radius:10px}
+button:active,button.on{background:#3b2f57}button:focus-visible{outline:2px solid var(--jade)}
+#pn{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;z-index:9}#pn[hidden]{display:none}
+#pb{width:min(94vw,520px);max-height:88vh;overflow:auto;background:#15111f;border:2px solid #6a5a2a;border-radius:12px;padding:10px;touch-action:pan-y}
+#tb{display:flex;flex-wrap:wrap;gap:3px}
+#pb button{height:34px;min-width:0;font-size:14px;padding:0 9px;margin:2px}
+#ms{min-height:1.4em;color:var(--gold);font-size:13px;margin:5px 0}
+#pc{line-height:1.9;font-size:14px}hr{border:0;border-top:1px solid #3a3020}small{color:#9a9080}
+.fb{display:inline-block;border:1px solid #6a5a2a;border-radius:10px;padding:7px 9px;background:#231d33;font-size:14px}
+@media (hover:hover) and (pointer:fine){#joy{display:none}}
+</style></head><body><div id="h1"></div><div id="log"></div>
+<div id="cw"><canvas id="c"></canvas><div id="joy"><i></i></div></div>
+<div id="bar"><div class="orb" id="ho"><i style="background:linear-gradient(#f55,#900)"></i><b id="ht"></b></div><div id="mid"><button id="bs" title="劍陣(空白)">⚔️</button><button id="bp" title="培元丹(Q)">🧪</button><button data-t="裝備" title="裝備(C)">🛡️</button><button data-t="物品" title="物品(I)">🎒</button><button data-t="煉丹" title="煉丹">⚗️</button><button data-t="靈植" title="靈植">🌱</button><button data-t="靈寵" title="靈寵">🐾</button><button data-t="系統" title="存檔/系統">⚙️</button></div><div class="orb" id="mo"><i style="background:linear-gradient(#5af,#127)"></i><b id="mt"></b></div></div>
+<div id="pn" hidden><div id="pb"><div id="tb"></div><div id="ms"></div><div id="pc"></div><button onclick="cls()">✖ 關閉</button></div></div>
+<script>
+const $=i=>document.getElementById(i),cv=$('c'),x=cv.getContext('2d'),W=cv.width=640,H=cv.height=600,TW=64,TH=32,WH=34,R=n=>Math.random()*n|0;
+const RE=['煉氣','築基','結丹','元嬰','化神'],ZN=['七玄門後山','黃楓谷','血色禁地','亂星海','魔道戰場'],
+MO=[['🐺','妖狼',12,4,0,6],['🕷️','毒蛛',10,5,0,7],['👻','鬼修',16,6,1,10],['🐍','青鱗蛇',14,5,1,8]],
+RA=[['凡','#ccc',1],['靈','#5af',1.5],['仙','#fc4',2.2]],WN=['飛劍','靈刃','古劍'],AN=['法袍','靈甲','護心鏡'];
+let g,P,pp,dead=0,LG=[],ac,tm,dp,KX=0,KY=0,JX=0,JY=0,camX=0,camY=0,fl=[],fx=[],lt=0,fr=0;
+const ev=k=>P.e[k]?P.e[k].v:0,A=()=>3+P.lv*2+ev('w')+(ev('r')>>1),D=()=>P.lv+ev('a')+(ev('r')>>1),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),
+solid=(u,v)=>g.M[v|0]?.[u|0]!==0,flo=(u,v,s,c)=>fl.push({x:u,y:v,s,c,t:.8});
+function say(t){$('ms').innerHTML=t;LG.push(t);LG=LG.slice(-4);$('log').innerHTML=LG.join('<br>')}
+function step(o,dx,dy,r=.28){for(const[a,b]of[[dx,0],[0,dy]]){const nx=o.x+a,ny=o.y+b;if(![[-r,-r],[r,-r],[-r,r],[r,r]].some(([p,q])=>solid(nx+p,ny+q))){o.x=nx;o.y=ny}}}
+
+/* 開闊迷宮：遞迴回溯 → 走道放大為 3 格寬 → 挖大廳 → 打通牆壁成環路 */
+function init(reset,f=1){
+ if(reset)P=newP(),LG=[];
+ dead=0;fl=[];fx=[];
+ const k=10,N=2*k+1,m=Array.from({length:N},()=>Array(N).fill(1)),st=[[1,1]];m[1][1]=0;
+ while(st.length){const[a,b]=st[st.length-1],n=[[2,0],[-2,0],[0,2],[0,-2]].filter(([dx,dy])=>{const u=a+dx,v=b+dy;return u>0&&v>0&&u<N-1&&v<N-1&&m[v][u]});
+  if(!n.length){st.pop();continue}
+  const[dx,dy]=n[R(n.length)];m[b+dy/2][a+dx/2]=0;m[b+dy][a+dx]=0;st.push([a+dx,b+dy])}
+ for(let i=0;i<N*2;i++){const u=1+R(N-2),v=1+R(N-2);if(m[v][u]&&(u+v)%2)m[v][u]=0}
+ const off=[];let G=0;for(let i=0;i<N;i++){off[i]=G;G+=i%2?3:1}
+ const M=Array.from({length:G},()=>Array(G).fill(1));
+ for(let i=0;i<N;i++)for(let j=0;j<N;j++)if(!m[j][i])for(let a=0;a<(i%2?3:1);a++)for(let b=0;b<(j%2?3:1);b++)M[off[j]+b][off[i]+a]=0;
+ for(let r=0;r<6;r++){const w=6+R(6),h=6+R(6),u=1+R(G-w-2),v=1+R(G-h-2);for(let j=v;j<v+h;j++)for(let i=u;i<u+w;i++)M[j][i]=0}
+ const c=[];M.forEach((r,v)=>r.forEach((q,u)=>{if(!q&&u+v>14)c.push([u+.5,v+.5])}));
+ c.sort((a,b)=>b[0]+b[1]-a[0]-a[1]);
+ const far=c.shift(),rest=c.sort(()=>Math.random()-.5),kk=1+.35*(f-1);
+ g={f,M,G,seen:M.map(r=>r.map(()=>0)),mons:[],it:[],st:f<5?{x:far[0],y:far[1]}:null};
+ const mk=(u,v,e,n,hp,a,d,xp,sp)=>({x:u,y:v,e,n,hp,mx:hp,a,def:d,xp,sp,cd:1});
+ for(let i=0;i<6+f*3;i++){const[u,v]=rest.pop(),t=MO[R(4)];g.mons.push(mk(u,v,t[0],t[1],t[2]*kk|0,t[3]+f,t[4],t[5]*f,1.5+.15*f))}
+ for(let i=0;i<8;i++){const[u,v]=rest.pop();g.it.push({x:u,y:v})}
+ if(f==5)g.mons.push(mk(far[0],far[1],'🐉','妖龍',140,16,4,300,1.8));
+ P.x=P.y=2.5;pp={x:2.5,y:2.5,cd:0};camX=0;camY=(P.x+P.y)*16-H/2+H/2;camX=(P.x-P.y)*32;camY=(P.x+P.y)*16;
+ say(`【${ZN[f-1]}】第${f}層`);ui()}
+function ui(){const r=RE[Math.min(4,(P.lv-1)/3|0)]+((P.lv-1)%3+1)+'層';
+ $('h1').textContent=`${ZN[g.f-1]} ${g.f}/5｜${r} Lv${P.lv}｜修為 ${P.xp}/${P.lv*20}｜💎${P.gold} ⚔️${A()} 🛡️${D()}`;
+ $('ho').firstChild.style.height=Math.max(0,P.hp/P.mhp*100)+'%';$('mo').firstChild.style.height=P.mp/P.mmp*100+'%';
+ $('ht').textContent=P.hp+'/'+P.mhp;$('mt').textContent=(P.mp|0)+'/'+P.mmp}
+
+/* 即時戰鬥 */
+function hit(m){const c=Math.random()<.12,d=Math.max(1,A()-m.def+R(3))*(c?2:1);m.hp-=d;flo(m.x,m.y,(c?'暴擊 ':'')+'-'+d,c?'#fc4':'#fff');fx.push({x:m.x,y:m.y,t:.25,e:'💥'});sfx(300);if(m.hp<=0)kill(m)}
+function gain(n){P.xp+=n;while(P.xp>=P.lv*20){P.xp-=P.lv*20;P.lv++;P.mhp+=12;P.mmp+=3;P.hp=P.mhp;P.mp=P.mmp;say(`✨ 突破至 Lv${P.lv}！`);flo(P.x,P.y,'境界突破！','#4f9');sfx(880)}}
+function pxp(p,n){p.xp+=n;while(p.xp>=p.lv*30){p.xp-=p.lv*30;p.lv++;say(`${p.e}${p.n} 成長至 Lv${p.lv}！`)}}
+function kill(m){g.mons.splice(g.mons.indexOf(m),1);say(`斬殺${m.n}，得修為${m.xp}`);
+ if(Math.random()<.3)g.it.push({x:m.x,y:m.y});const pt=P.pets[P.pa];if(pt)pxp(pt,2);
+ if(m.n=='妖龍'){dead=2;say('🎉 妖龍伏誅，你踏上飛升之路！按任意鍵再入輪迴');return}
+ gain(m.xp)}
+function gear(){const r=Math.random()*100,f=g.f,gi=r<1+f*.5?3:r<8+f*1.5?2:r<30+f*3?1:0,k='war'[R(3)],v=Math.round((2+f*2+R(3))*GR[gi][2]),o={k,g:gi,v,n:{w:WN,a:AN,r:RN}[k][R(3)]};
+ if(!P.e[k])P.e[k]=o;else if(P.bag.length<20)P.bag.push(o);else P.gold+=v*3;say(`獲得 ${it(o)}`)}
+function loot(){const k=R(20),r=Math.random();
+ if(k<4){P.pill.pei++;say('拾得 🧪 培元丹')}else if(k<5){P.pill.ju++;say('拾得 聚氣丹')}
+ else if(k<7){const n=10+R(20)*g.f;P.gold+=n;say(`拾得 💎 靈石×${n}`)}
+ else if(k<10){const t=r<.06?1:0;P.herb[t]++;say(`採得 🌿${HN[t]}靈草`)}
+ else if(k<11){P.egg++;say('拾得 🥚 靈獸卵')}else gear()}
+function sword(){if(dead)return rez();if(P.mp<5||P.sk>0)return;P.mp-=5;P.sk=2.5;let n=0;
+ for(const m of[...g.mons])if(dist(m,P)<=3){m.hp-=Math.max(1,A()*1.5-m.def|0);flo(m.x,m.y,'劍','#5af');n++;if(m.hp<=0)kill(m)}
+ fx.push({x:P.x,y:P.y,t:.5,ring:1});say(n?`青竹蜂雲劍出鞘，命中 ${n} 敵`:'劍氣落空');sfx(650)}
+function usep(k){if(dead)return rez();if(P.pill[k]<1)return say('沒有此丹藥');P.pill[k]--;
+ if(k=='pei'){P.hp=Math.min(P.mhp,P.hp+P.mhp*.4|0);P.mp=Math.min(P.mmp,P.mp+5)}else if(k=='ju')P.mp=Math.min(P.mmp,P.mp+15);else gain(60);
+ say('服下'+{pei:'培元丹',ju:'聚氣丹',zhu:'築基丹'}[k]);sfx(500);if(cur)pn(cur)}
+const pot=()=>usep('pei');
+function rez(){if(dead==1){P.hp=P.mhp;P.mp=P.mmp;P.gold=P.gold*.7|0;init(0,g.f)}else init(0,1)}
+
+function upd(dt){
+ const sx=KX+JX,sy=KY+JY,l=Math.min(1,Math.hypot(sx,sy));
+ if(l>.05){const wx=sx/TW+sy/TH,wy=sy/TH-sx/TW,n=Math.hypot(wx,wy);step(P,wx/n*l*4.6*dt,wy/n*l*4.6*dt)}
+ P.mp=Math.min(P.mmp,P.mp+dt*.6);P.cd-=dt;P.sk-=dt;P.hurt-=dt;
+ let nm=null,nd=1.4;for(const m of g.mons){const d=dist(m,P);if(d<nd){nd=d;nm=m}}
+ if(nm&&P.cd<=0){P.cd=.6;hit(nm)}
+ if(!dead)for(const m of g.mons){m.cd-=dt;const dx=P.x-m.x,dy=P.y-m.y,d=Math.hypot(dx,dy);
+  if(d<7&&d>.85)step(m,dx/d*m.sp*dt,dy/d*m.sp*dt,.3);
+  else if(d<=.85&&m.cd<=0){m.cd=1.2;const dm=Math.max(1,m.a-D()+R(3));P.hp-=dm;P.hurt=.25;flo(P.x,P.y,'-'+dm,'#f55');sfx(120);if(P.hp<=0){dead=1;say('💀 道消身殞。按任意鍵於本層復活（靈石-30%）')}}}
+ const pt=P.pets[P.pa];if(pt&&!dead){pp.cd-=dt;const d=dist(pp,P);if(d>1.3)step(pp,(P.x-pp.x)/d*4.8*dt,(P.y-pp.y)/d*4.8*dt,.25);if(d>8){pp.x=P.x;pp.y=P.y}
+  if(pp.cd<=0){let t=null,td=2.8;for(const m of g.mons){const q=dist(m,pp);if(q<td){td=q;t=m}}
+   if(t){pp.cd=1.2;const dm=Math.max(1,pa(pt)-t.def+R(2));t.hp-=dm;flo(t.x,t.y,'-'+dm,'#9f9');fx.push({x:t.x,y:t.y,t:.2,e:'✨'});if(t.hp<=0)kill(t)}}}
+ for(let i=g.it.length-1;i>=0;i--)if(dist(g.it[i],P)<.6){g.it.splice(i,1);loot()}
+ if(g.st&&dist(g.st,P)<.7){P.hp=Math.min(P.mhp,P.hp+P.mhp*.3|0);sfx(700);init(0,g.f+1)}
+ for(let v=P.y-7|0;v<=P.y+7;v++)for(let u=P.x-7|0;u<=P.x+7;u++)if(g.seen[v]&&g.seen[v][u]===0&&Math.hypot(u+.5-P.x,v+.5-P.y)<=7)g.seen[v][u]=1;
+ fl.forEach(f=>f.t-=dt);fl=fl.filter(f=>f.t>0);fx.forEach(f=>f.t-=dt);fx=fx.filter(f=>f.t>0)}
+
+/* 2.5D 等角投影繪製：地磚菱形 + 有高度的牆塊 + 直立 emoji 與地面陰影，依深度排序 */
+function draw(){x.fillStyle='#07060c';x.fillRect(0,0,W,H);
+ const px=(P.x-P.y)*32,py=(P.x+P.y)*16;camX+=(px-camX)*.15;camY+=(py-camY)*.15;
+ const pr=(u,v,z=0)=>[W/2+(u-v)*32-camX,H/2+(u+v)*16-camY-z],poly=(pts,c)=>{x.beginPath();pts.forEach((p,i)=>i?x.lineTo(...p):x.moveTo(...p));x.closePath();x.fillStyle=c;x.fill()},
+ vis=(u,v)=>Math.hypot(u+.5-P.x,v+.5-P.y)<=7,list=[],i0=Math.max(0,P.x-11|0),i1=Math.min(g.G-1,P.x+11),j0=Math.max(0,P.y-11|0),j1=Math.min(g.G-1,P.y+11);
+ x.textAlign='center';x.textBaseline='middle';
+ for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){if(!g.seen[j][i])continue;const v=vis(i,j),w=g.M[j][i];
+  if(w){list.push({d:i+j+1,f:()=>{x.globalAlpha=v?1:.4;const T=pr(i,j),Rr=pr(i+1,j),B=pr(i+1,j+1),L=pr(i,j+1),up=p=>[p[0],p[1]-WH];
+   poly([L,B,up(B),up(L)],'#3a2d4d');poly([B,Rr,up(Rr),up(B)],'#2a2040');poly([up(T),up(Rr),up(B),up(L)],'#5d4a78');x.globalAlpha=1}})}
+  else{x.globalAlpha=v?1:.4;poly([pr(i,j),pr(i+1,j),pr(i+1,j+1),pr(i,j+1)],(i+j)&1?'#241e35':'#1f1a2e');x.globalAlpha=1}}
+ const ent=(o,e,sz,d)=>list.push({d:o.x+o.y,f:()=>{const[a,b]=pr(o.x,o.y);x.fillStyle='rgba(0,0,0,.45)';x.beginPath();x.ellipse(a,b,sz*.5,sz*.22,0,0,7);x.fill();
+   x.font=sz+'px sans-serif';x.fillText(e,a,b-sz*.45);if(o.mx){x.fillStyle='#d64545';x.fillRect(a-14,b-sz-6,28*o.hp/o.mx,4)}}});
+ if(g.st&&g.seen[g.st.y|0][g.st.x|0])ent(g.st,'🌀',34);
+ g.it.forEach(o=>vis(o.x-.5|0,o.y-.5|0)&&ent(o,'🎁',26));
+ g.mons.forEach(m=>Math.hypot(m.x-P.x,m.y-P.y)<=7&&ent(m,m.e,m.e=='🐉'?52:34));
+ if(P.pets[P.pa])ent(pp,P.pets[P.pa].e,26);ent(P,'🧙',38);
+ list.sort((a,b)=>a.d-b.d).forEach(o=>o.f());
+ if([[1,0],[0,1],[1,1]].some(([a,b])=>solid(P.x+a,P.y+b))){const[a,b]=pr(P.x,P.y);x.globalAlpha=.4;x.font='38px sans-serif';x.fillText('🧙',a,b-17);x.globalAlpha=1}
+ fx.forEach(f=>{const[a,b]=pr(f.x,f.y);if(f.ring){x.strokeStyle='#5af';x.lineWidth=3;x.beginPath();x.ellipse(a,b,(.5-f.t)*6*32,(.5-f.t)*6*16,0,0,7);x.stroke()}else{x.font='26px sans-serif';x.fillText(f.e,a,b-30)}});
+ x.font='bold 16px sans-serif';fl.forEach(f=>{const[a,b]=pr(f.x,f.y);x.fillStyle=f.c;x.fillText(f.s,a,b-44-(.8-f.t)*40)});
+ if(P.hurt>0){x.fillStyle=`rgba(200,0,0,${P.hurt})`;x.fillRect(0,0,W,H)}}
+function tick(t){const dt=Math.min(.05,(t-lt)/1000||0);lt=t;if(!dead&&$('pn').hidden)upd(dt);draw();if(++fr%6==0)ui();requestAnimationFrame(tick)}
+
+/* 8-bit 音樂：方波旋律（宮調五聲音階）+ 三角波低音 */
+function au(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state=='suspended')ac.resume()}
+function tone(f,d,ty='square',v=.04){if(!ac)return;const o=ac.createOscillator(),n=ac.createGain(),t=ac.currentTime;o.type=ty;o.frequency.value=f;n.gain.setValueAtTime(v,t);n.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(n).connect(ac.destination);o.start(t);o.stop(t+d)}
+const sfx=f=>tone(f,.07,'square',.05),ML=[0,4,7,9,7,4,2,null,4,7,9,12,9,7,4,null,9,7,4,2,0,2,4,7,9,7,4,2,0,null,-3,null],BS=[0,-3,-5,-3];let s8=0;
+function togMusic(){au();if(tm){clearInterval(tm);tm=0}else tm=setInterval(()=>{const s=ML[s8%32];if(s!=null)tone(220*2**(s/12),.2);if(s8%4==0)tone(110*2**(BS[(s8>>3)%4]/12),.45,'triangle',.09);s8++},230);if(cur=='系統')pn('系統')}
+
+/* 品級、面板、煉丹、靈植、靈寵、存檔 */
+const GR=[['法器','#ccc',1],['法寶','#5af',1.6],['古寶','#c6f',2.4],['通天靈寶','#fc4',3.5]],RN=['玉佩','儲物戒','靈環'],HN=['百年','千年','萬年'],GT=[60,180,480],
+PT=[['🐛','噬金蟲'],['🐺','靈狼'],['🦋','靈蝶']],TB=['裝備','物品','煉丹','靈植','靈寵','系統'],
+AL=[['培元丹','pei',[2,0,0],0,.9],['聚氣丹','ju',[3,0,0],0,.85],['築基丹','zhu',[0,2,0],30,.7]],
+newP=()=>({hp:60,mhp:60,mp:12,mmp:12,lv:1,xp:0,gold:20,cd:0,sk:0,hurt:0,e:{},bag:[],pill:{pei:2,ju:0,zhu:0},herb:[0,0,0],egg:1,pets:[],pa:-1,plot:[null,null,null],bt:0}),
+pa=p=>2+p.lv*2,it=o=>`<span style="color:${GR[o.g][1]}">${{w:'🗡️',a:'🛡️',r:'💍'}[o.k]}${GR[o.g][0]}·${o.n}(+${o.v})</span>`,
+tier=e=>e>=GT[2]?2:e>=GT[1]?1:e>=GT[0]?0:-1,el=t=>(Date.now()-t)/1000,sg=()=>P.plot.map(t=>t?Math.min(50,el(t)/10|0):'x').join()+(Date.now()<P.bt?'b':'');
+let cur='',sig='';
+const T={
+裝備:()=>['w','a','r'].map(k=>`${{w:'🗡️武器',a:'🛡️防具',r:'💍飾品'}[k]}：${P.e[k]?it(P.e[k])+` <button onclick="uneq('${k}')">卸下</button>`:'—'}`).join('<br>')+`<hr>⚔️攻擊 ${A()}　🛡️防禦 ${D()}　❤️氣血上限 ${P.mhp}<br><small>品級由低到高：法器＜法寶＜古寶＜通天靈寶。飾品同時加成攻防。</small>`,
+物品:()=>`💎靈石 ${P.gold}<br>培元丹×${P.pill.pei}<button onclick="usep('pei')">服</button> 聚氣丹×${P.pill.ju}<button onclick="usep('ju')">服</button> 築基丹×${P.pill.zhu}<button onclick="usep('zhu')">服</button><br>靈草：${HN.map((n,i)=>n+'×'+P.herb[i]).join(' ')}　🥚靈獸卵×${P.egg}<hr>`+(P.bag.map((o,i)=>`${it(o)} <button onclick="eq(${i})">裝備</button><button onclick="sell(${i})">售${o.v*3}</button>`).join('<br>')||'背包內沒有裝備')+`<br><small>背包 ${P.bag.length}/20</small>`,
+煉丹:()=>'🔥丹爐：以靈草煉丹，有炸爐風險。<br>'+AL.map((a,i)=>`${a[0]}：${a[2].map((n,j)=>n?HN[j]+'靈草×'+n:'').join('')}${a[3]?' 💎'+a[3]:''}（成功率${Math.round(a[4]*100)}%）<button onclick="alch(${i})">煉製</button>`).join('<br>')+`<br><small>培元丹回復氣血，聚氣丹回復靈力，築基丹增加修為。靈草庫存 ${P.herb.join('/')}</small>`,
+靈植:()=>{sig=sg();return P.plot.map((t,i)=>{if(!t)return`空地 <button onclick="plant(${i})">播種 💎5</button>`;const e=el(t),tr=tier(e),nx=GT.find(q=>q>e);
+  return`${tr<0?'🌱':['🌿','🍀','🌺'][tr]} ${tr<0?'生長中':HN[tr]+'靈草'}${nx?`（約${Math.ceil((nx-e)/10)*10}秒後${HN[tier(nx)]}）`:'（已達萬年）'} <button onclick="harv(${i})">採收</button>`}).join('<br>')+`<hr><button onclick="bottle()">🍾 掌天瓶催熟</button> ${Date.now()<P.bt?'冷卻 '+Math.ceil((P.bt-Date.now())/1000)+' 秒':'可用'}<br><small>靈草生長越久藥齡越高，離線時仍持續計時。</small>`},
+靈寵:()=>`🥚靈獸卵×${P.egg} <button onclick="hatch()">孵化</button>　百年靈草×${P.herb[0]}<br>`+(P.pets.map((p,i)=>`${p.e}${p.n} Lv${p.lv}·${p.lv<3?'幼體':p.lv<6?'成體':'靈王'} 攻${pa(p)} 修${p.xp}/${p.lv*30} <button onclick="feed(${i})">餵養</button><button onclick="act(${i})">${P.pa==i?'休憩':'出戰'}</button>`).join('<br>')||'靈獸袋是空的')+'<br><small>靈獸袋最多 3 隻；出戰靈寵會跟隨並自動攻擊。餵養消耗 1 株百年靈草。</small>',
+系統:()=>`<button onclick="expo()">📤 匯出存檔 (JSON)</button> <label class="fb">📥 匯入存檔<input type="file" accept=".json,application/json" hidden onchange="impf(this.files[0])"></label><br><button onclick="togMusic()">🎵 ${tm?'關閉':'開啟'} 8-bit 音樂</button>${dp?' <button onclick="dp.prompt()">📲 安裝到裝置</button>':''}<br><button onclick="if(confirm('清除所有進度並重新開始？')){localStorage.removeItem('xxl');rez();cls()}">🗑️ 重新開始</button><br><small>進度每 8 秒自動存於瀏覽器。iOS 請用 Safari「分享→加入主畫面」安裝。</small>`};
+function pn(t){cur=t;$('pn').hidden=false;$('tb').innerHTML=TB.map(k=>`<button ${k==t?'class="on"':''} onclick="pn('${k}')">${k}</button>`).join('');$('pc').innerHTML=T[t]();held.clear();ax()}
+function cls(){$('pn').hidden=true;cur=''}
+setInterval(()=>{if(cur=='靈植'&&!$('pn').hidden&&sig!=sg())$('pc').innerHTML=T.靈植()},1000);
+function eq(i){const o=P.bag[i],old=P.e[o.k];P.e[o.k]=o;P.bag.splice(i,1);if(old)P.bag.push(old);say(`裝備 ${it(o)}`);pn('物品')}
+function uneq(k){if(P.bag.length>=20)return say('背包已滿');P.bag.push(P.e[k]);delete P.e[k];pn('裝備')}
+function sell(i){P.gold+=P.bag[i].v*3;P.bag.splice(i,1);pn('物品')}
+function alch(i){const a=AL[i];if(a[2].some((n,j)=>P.herb[j]<n)||P.gold<a[3])return say('材料不足');a[2].forEach((n,j)=>P.herb[j]-=n);P.gold-=a[3];
+ if(Math.random()<a[4]){P.pill[a[1]]++;say(`🔥 煉成 ${a[0]}！`)}else say('💥 丹爐炸裂，藥材盡毀…');sfx(400);pn('煉丹')}
+function plant(i){if(P.gold<5)return say('靈石不足');P.gold-=5;P.plot[i]=Date.now();say('🌱 播下靈草種子');pn('靈植')}
+function harv(i){const tr=P.plot[i]?tier(el(P.plot[i])):-1;if(tr<0)return say('靈草尚未成熟');P.herb[tr]++;P.plot[i]=null;say(`採收 ${HN[tr]}靈草`);pn('靈植')}
+function bottle(){if(Date.now()<P.bt)return say('掌天瓶尚在冷卻');P.plot=P.plot.map(t=>t&&t-120000);P.bt=Date.now()+90000;say('🍾 掌天瓶綠液滴落，靈草飛速生長！');pn('靈植')}
+function hatch(){if(P.egg<1||P.pets.length>=3)return say('無法孵化（無卵或靈獸袋已滿）');P.egg--;const t=PT[P.pets.length?R(3):0];P.pets.push({e:t[0],n:t[1],lv:1,xp:0});say(`🥚 孵出 ${t[0]}${t[1]}！`);pn('靈寵')}
+function feed(i){if(P.herb[0]<1)return say('缺少百年靈草');P.herb[0]--;pxp(P.pets[i],30);pn('靈寵')}
+function act(i){P.pa=P.pa==i?-1:i;pp={x:P.x,y:P.y,cd:0};pn('靈寵')}
+function expo(){const b=new Blob([JSON.stringify({v:1,f:g.f,P},null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='xiuxian-save.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),999);say('📤 已匯出存檔')}
+function impf(f){if(f)f.text().then(t=>{try{load(JSON.parse(t));cls()}catch{say('❌ 存檔格式錯誤')}})}
+function load(o){if(!o||!o.P||typeof o.P.lv!='number')throw 0;P=Object.assign(newP(),o.P);if(P.hp<=0)P.hp=P.mhp;init(0,o.f>0&&o.f<6?o.f:1);say('存檔已載入')}
+
+/* 輸入：鍵盤 / 虛擬搖桿 / 按鈕 */
+const held=new Set(),ax=()=>{KX=(held.has('d')||held.has('arrowright'))-(held.has('a')||held.has('arrowleft'));KY=(held.has('s')||held.has('arrowdown'))-(held.has('w')||held.has('arrowup'))};
+onkeydown=e=>{au();const k=e.key.toLowerCase();if(dead&&!e.repeat)return rez();
+ if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){e.preventDefault();held.add(k);ax()}
+ else if(k==' '||k=='e'){e.preventDefault();sword()}else if(k=='q')pot();else if(k=='m')togMusic();else if(k=='i')pn('物品');else if(k=='c')pn('裝備');else if(k=='escape')cls()};
+onkeyup=e=>{held.delete(e.key.toLowerCase());ax()};onblur=()=>{held.clear();ax()};
+const jv=$('joy'),kn=jv.firstChild;
+function jm(e){const r=jv.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2,m=Math.hypot(dx,dy),k=Math.min(1,m/(r.width/2))/(m||1);JX=dx*k;JY=dy*k;kn.style.transform=`translate(${JX*40}px,${JY*40}px)`}
+jv.onpointerdown=e=>{if(dead)return rez();jv.setPointerCapture(e.pointerId);au();jm(e)};
+jv.onpointermove=e=>{if(jv.hasPointerCapture(e.pointerId))jm(e)};
+jv.onpointerup=jv.onpointercancel=()=>{JX=JY=0;kn.style.transform=''};
+$('bs').onpointerdown=e=>{e.preventDefault();au();sword()};$('bp').onpointerdown=e=>{e.preventDefault();au();pot()};
+cv.onpointerdown=()=>{if(dead)rez()};
+
+/* PWA */
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e});
+
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+document.querySelectorAll('#mid [data-t]').forEach(b=>b.onclick=()=>pn(b.dataset.t));
+try{const v=localStorage.getItem('xxl');if(v)load(JSON.parse(v));else{init(1);say('韓立踏上仙途。WASD/搖桿移動，靠近敵人自動出劍，空白=劍陣，Q=培元丹，I=物品，C=裝備')}}catch{init(1)}
+setInterval(()=>{try{if(!dead)localStorage.setItem('xxl',JSON.stringify({v:1,f:g.f,P}))}catch{}},8000);
+requestAnimationFrame(tick);
+</script></body></html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>凡人修仙錄</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b0a12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🗡️%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#0b0a12;--fg:#e8e2d0;--gold:#e0b050;--jade:#3fb68b}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:"Noto Serif TC","PMingLiU",serif;overscroll-behavior:none;touch-action:manipulation}
+body{display:flex;flex-direction:column;align-items:center;gap:6px;padding:calc(env(safe-area-inset-top) + 6px) 6px calc(env(safe-area-inset-bottom) + 6px)}
+#hud{width:min(96vw,560px);display:grid;grid-template-columns:1fr 1fr;gap:3px 8px;font-size:14px}
+#h1,#h2{grid-column:1/3}#h1{color:var(--gold)}
+.bar{height:8px;background:#2a2536;border-radius:4px;overflow:hidden}.bar i{display:block;height:100%;transition:width .2s}
+#hp{background:#d64545}#mp{background:#4a8be0}
+canvas{width:min(96vw,54vh,600px);aspect-ratio:1;background:#000;border:2px solid #6a5a2a;image-rendering:pixelated}
+#log{width:min(96vw,560px);height:4.9em;font-size:13px;line-height:1.2;color:#cbbfa0;overflow:hidden}
+#ctl{display:flex;justify-content:space-between;align-items:center;width:min(96vw,560px)}
+#pad{display:grid;grid-template:repeat(3,54px)/repeat(3,54px);gap:4px}
+#act{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+button{font:inherit;font-size:18px;min-width:54px;height:54px;padding:0 12px;background:#231d33;color:var(--fg);border:1px solid #6a5a2a;border-radius:10px;touch-action:none;user-select:none}
+button:active{background:#3b2f57}button:focus-visible{outline:2px solid var(--jade)}button[hidden]{display:none}
+@media (hover:hover) and (pointer:fine){#pad{display:none}#ctl{justify-content:center}}
+</style></head><body>
+<div id="hud"><div id="h1"></div><div id="h2"></div><div class="bar"><i id="hp"></i></div><div class="bar"><i id="mp"></i></div></div>
+<canvas id="c"></canvas>
+<div id="log"></div>
+<div id="ctl">
+<div id="pad"><button style="grid-area:1/2" data-d="0,-1">▲</button><button style="grid-area:2/1" data-d="-1,0">◀</button><button style="grid-area:2/3" data-d="1,0">▶</button><button style="grid-area:3/2" data-d="0,1">▼</button></div>
+<div id="act"><button id="bs">⚔️ 劍陣</button><button id="bp">🧪 丹藥</button><button id="bm">🎵 音樂</button><button id="bi" hidden>📲 安裝</button></div>
+</div>
+<script>
+const $=i=>document.getElementById(i),cv=$('c'),x=cv.getContext('2d'),V=11,TS=36,S=25,R=n=>Math.random()*n|0;
+cv.width=cv.height=V*TS;
+const RE=['煉氣','築基','結丹','元嬰','化神'],ZN=['七玄門後山','黃楓谷','血色禁地','亂星海','魔道戰場'],
+MO=[['🐺','妖狼',12,4,0,6],['🕷️','毒蛛',10,5,0,7],['👻','鬼修',16,6,1,10],['🐍','青鱗蛇',14,5,1,8]],
+RA=[['凡','#ccc',1],['靈','#5af',1.5],['仙','#fc4',2.2]],WN=['飛劍','靈刃','古劍'],AN=['法袍','靈甲','玉佩'];
+let g,P,dead=0,LG=[],ac,tm,dp;
+const A=()=>3+P.lv*2+(P.w?P.w.v:0),D=()=>P.lv+(P.a?P.a.v:0),at=(u,v)=>g.mons.find(m=>m.x==u&&m.y==v),
+mk=(u,v,e,n,hp,a,d,xp)=>({x:u,y:v,e,n,hp,mx:hp,a,def:d,xp});
+function say(t){LG.push(t);LG=LG.slice(-4);$('log').innerHTML=LG.join('<br>')}
+
+/* 迷宮：遞迴回溯 + 隨機打通牆壁形成環路 */
+function init(reset,f=1){
+ if(reset)P={hp:40,mhp:40,mp:12,mmp:12,lv:1,xp:0,pot:2,gold:0,t:0,w:null,a:null},LG=[];
+ dead=0;P.x=P.y=1;
+ const m=Array.from({length:S},()=>Array(S).fill(1)),st=[[1,1]];m[1][1]=0;
+ while(st.length){const[a,b]=st[st.length-1],n=[[2,0],[-2,0],[0,2],[0,-2]].filter(([dx,dy])=>{const u=a+dx,v=b+dy;return u>0&&v>0&&u<S-1&&v<S-1&&m[v][u]});
+  if(!n.length){st.pop();continue}
+  const[dx,dy]=n[R(n.length)];m[b+dy/2][a+dx/2]=0;m[b+dy][a+dx]=0;st.push([a+dx,b+dy])}
+ for(let i=0;i<S*2;i++){const u=1+R(S-2),v=1+R(S-2);if(m[v][u]&&(u+v)%2)m[v][u]=0}
+ const fl=[];m.forEach((r,v)=>r.forEach((c,u)=>{if(!c&&u+v>7)fl.push([u,v])}));
+ fl.sort((a,b)=>b[0]+b[1]-a[0]-a[1]);
+ const far=fl.shift(),rest=fl.sort(()=>Math.random()-.5),k=1+.35*(f-1);
+ g={f,m,seen:m.map(r=>r.map(()=>0)),mons:[],it:[],st:f<5?{x:far[0],y:far[1]}:null};
+ for(let i=0;i<4+f*2;i++){const[u,v]=rest.pop(),t=MO[R(4)];g.mons.push(mk(u,v,t[0],t[1],t[2]*k|0,t[3]+f,t[4],t[5]*f))}
+ for(let i=0;i<6;i++){const[u,v]=rest.pop();g.it.push({x:u,y:v})}
+ if(f==5)g.mons.push(mk(far[0],far[1],'🐉','妖龍',140,16,4,300));
+ say(`【${ZN[f-1]}】第${f}層`);reveal();ui();draw()}
+function reveal(){for(let v=P.y-5;v<=P.y+5;v++)for(let u=P.x-5;u<=P.x+5;u++)if(g.m[v]&&g.m[v][u]!==undefined&&Math.hypot(u-P.x,v-P.y)<=4.5)g.seen[v][u]=1}
+function ui(){const r=RE[Math.min(4,(P.lv-1)/3|0)]+((P.lv-1)%3+1)+'層';
+ $('h1').textContent=`${ZN[g.f-1]} ${g.f}/5 ｜ ${r} Lv${P.lv} ｜ 經驗 ${P.xp}/${P.lv*20}`;
+ $('h2').textContent=`❤️${P.hp}/${P.mhp} 🔵${P.mp}/${P.mmp} 🧪${P.pot} 💎${P.gold} ⚔️${A()} 🛡️${D()}`;
+ $('hp').style.width=P.hp/P.mhp*100+'%';$('mp').style.width=P.mp/P.mmp*100+'%'}
+function draw(){x.fillStyle='#000';x.fillRect(0,0,V*TS,V*TS);const h=V>>1;x.textAlign='center';x.textBaseline='middle';x.font=(TS*.75|0)+'px sans-serif';
+ for(let j=0;j<V;j++)for(let i=0;i<V;i++){const u=P.x-h+i,v=P.y-h+j;if(!g.m[v]||!g.seen[v][u])continue;
+  const X=i*TS,Y=j*TS,cx=X+TS/2,cy=Y+TS/2+2,vis=Math.hypot(u-P.x,v-P.y)<=4.5;
+  x.fillStyle=g.m[v][u]?'#4a3a5c':'#1b1726';x.fillRect(X,Y,TS,TS);
+  if(g.m[v][u]){x.strokeStyle='#2a2036';x.strokeRect(X+.5,Y+.5,TS-1,TS/2);x.strokeRect(X+.5,Y+TS/2,TS-1,TS/2-.5)}
+  if(g.st&&g.st.x==u&&g.st.y==v)x.fillText('🌀',cx,cy);
+  if(vis){if(g.it.some(o=>o.x==u&&o.y==v))x.fillText('🎁',cx,cy);const m=at(u,v);
+   if(m){x.fillText(m.e,cx,cy);x.fillStyle='#d64545';x.fillRect(X+3,Y+1,(TS-6)*m.hp/m.mx,3)}}
+  else{x.fillStyle='rgba(0,0,0,.55)';x.fillRect(X,Y,TS,TS)}}
+ x.fillText('🧙',h*TS+TS/2,h*TS+TS/2+2)}
+
+/* 戰鬥與掉寶 */
+function hit(m){const c=Math.random()<.12,d=Math.max(1,A()-m.def+R(3))*(c?2:1);m.hp-=d;say(`攻擊${m.n} -${d}${c?' 暴擊！':''}`);sfx(300);if(m.hp<=0)kill(m)}
+function kill(m){g.mons.splice(g.mons.indexOf(m),1);P.xp+=m.xp;say(`斬殺${m.n}，得經驗${m.xp}`);
+ if(Math.random()<.3)g.it.push({x:m.x,y:m.y});
+ if(m.n=='妖龍'){dead=2;say('🎉 妖龍伏誅，你踏上飛升之路！按任意鍵重修');return}
+ while(P.xp>=P.lv*20){P.xp-=P.lv*20;P.lv++;P.mhp+=12;P.mmp+=3;P.hp=P.mhp;P.mp=P.mmp;say(`✨ 突破至 Lv${P.lv}！`);sfx(880)}}
+function loot(){const r=Math.random(),k=R(10);
+ if(k<3){P.pot++;say('拾得 🧪 丹藥')}
+ else if(k<5){const n=10+R(20)*g.f;P.gold+=n;say(`拾得 💎 靈石×${n}`)}
+ else{const ri=r<.08?2:r<.3?1:0,w=k<8,v=Math.round((2+g.f*2+R(3))*RA[ri][2]),s=w?'w':'a',
+  it={n:RA[ri][0]+'品'+(w?WN:AN)[R(3)],v};
+  if(!P[s]||P[s].v<v){P[s]=it;say(`裝備 ${w?'🗡️':'🛡️'}${it.n}(+${v})`)}else say(`棄置${it.n}`)}}
+function foes(){for(const m of g.mons){const d=Math.abs(m.x-P.x)+Math.abs(m.y-P.y);
+ if(d==1){const dm=Math.max(1,m.a-D()+R(3));P.hp-=dm;say(`${m.n}攻擊你 -${dm}`);sfx(120)}
+ else if(d<=6){const s=[[Math.sign(P.x-m.x),0],[0,Math.sign(P.y-m.y)]];if(Math.abs(P.y-m.y)>Math.abs(P.x-m.x))s.reverse();
+  for(const[dx,dy]of s){if(!dx&&!dy)continue;const u=m.x+dx,v=m.y+dy;if(!g.m[v][u]&&!at(u,v)&&!(u==P.x&&v==P.y)){m.x=u;m.y=v;break}}}}
+ if(P.hp<=0){dead=1;say('💀 道消身殞。按任意鍵重修')}}
+function end(){if(!dead)foes();P.t++;if(P.t%3==0&&P.mp<P.mmp)P.mp++;reveal();ui();draw()}
+function mv(dx,dy){if(dead)return init(1);
+ const u=P.x+dx,v=P.y+dy,m=at(u,v);
+ if(m)hit(m);
+ else if(g.m[v]&&g.m[v][u]===0){P.x=u;P.y=v;sfx(200);
+  const i=g.it.findIndex(o=>o.x==u&&o.y==v);if(i>=0){g.it.splice(i,1);loot()}
+  if(g.st&&u==g.st.x&&v==g.st.y){P.hp=Math.min(P.mhp,P.hp+P.mhp*.3|0);sfx(700);return init(0,g.f+1)}}
+ else return;
+ end()}
+function sword(){if(dead)return init(1);if(P.mp<5)return say('靈力不足');P.mp-=5;let n=0;
+ for(const m of[...g.mons])if(Math.hypot(m.x-P.x,m.y-P.y)<=3.5){m.hp-=Math.max(1,A()*1.5-m.def|0);n++;if(m.hp<=0)kill(m)}
+ say(n?`青竹蜂雲劍出鞘，命中 ${n} 敵`:'劍氣落空');sfx(650);end()}
+function pot(){if(dead)return init(1);if(P.pot<1)return say('沒有丹藥');P.pot--;P.hp=Math.min(P.mhp,P.hp+P.mhp*.4|0);P.mp=Math.min(P.mmp,P.mp+5);say('服下 🧪 丹藥');sfx(500);end()}
+
+/* 8-bit 音樂：方波旋律（宮調五聲音階）+ 三角波低音 */
+function au(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state=='suspended')ac.resume()}
+function tone(f,d,ty='square',v=.04){if(!ac)return;const o=ac.createOscillator(),n=ac.createGain(),t=ac.currentTime;o.type=ty;o.frequency.value=f;n.gain.setValueAtTime(v,t);n.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(n).connect(ac.destination);o.start(t);o.stop(t+d)}
+const sfx=f=>tone(f,.07,'square',.05),ML=[0,4,7,9,7,4,2,null,4,7,9,12,9,7,4,null,9,7,4,2,0,2,4,7,9,7,4,2,0,null,-3,null],BS=[0,-3,-5,-3];
+let st8=0;
+$('bm').onclick=()=>{au();if(tm){clearInterval(tm);tm=0;$('bm').textContent='🎵 音樂'}else{$('bm').textContent='🔇 靜音';
+ tm=setInterval(()=>{const s=ML[st8%32];if(s!=null)tone(220*2**(s/12),.2);if(st8%4==0)tone(110*2**(BS[(st8>>3)%4]/12),.45,'triangle',.09);st8++},230)}};
+
+/* 輸入：鍵盤 / 點擊畫面 / 虛擬方向鍵 */
+const K={ArrowUp:[0,-1],w:[0,-1],ArrowDown:[0,1],s:[0,1],ArrowLeft:[-1,0],a:[-1,0],ArrowRight:[1,0],d:[1,0]};
+onkeydown=e=>{au();const k=K[e.key];if(k){e.preventDefault();mv(...k)}else if(e.key==' '||e.key=='e'){e.preventDefault();sword()}else if(e.key=='q')pot();else if(e.key=='m')$('bm').click()};
+cv.onpointerdown=e=>{au();const r=cv.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2;Math.abs(dx)>Math.abs(dy)?mv(Math.sign(dx),0):mv(0,Math.sign(dy))};
+document.querySelectorAll('#pad button').forEach(b=>b.onpointerdown=e=>{e.preventDefault();au();mv(...b.dataset.d.split(',').map(Number))});
+$('bs').onpointerdown=e=>{e.preventDefault();au();sword()};$('bp').onpointerdown=e=>{e.preventDefault();au();pot()};
+
+/* PWA */
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('bi').hidden=false});
+$('bi').onclick=()=>dp&&dp.prompt();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+init(1);say('韓立踏上仙途。方向鍵/WASD 或點擊畫面移動，空白=劍陣，Q=丹藥，M=音樂');
+</script></body></html>
