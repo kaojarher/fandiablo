@@ -376,8 +376,23 @@ function draw(){x.fillStyle='#07060c';x.fillRect(0,0,W,H);x.save();x.scale(ZM,ZM
  fx.forEach(f=>{const[a,b]=pr(f.x,f.y);if(f.ring){x.strokeStyle=f.col||'#5af';x.lineWidth=3;x.beginPath();x.ellipse(a,b,(.5-f.t)*6*32,(.5-f.t)*6*16,0,0,7);x.stroke()}else{x.font='26px sans-serif';x.fillText(f.e,a,b-30)}});
  vfx.forEach(function(e){drawV(e,pr)});x.font='bold 16px sans-serif';fl.forEach(f=>{const[a,b]=pr(f.x,f.y);x.fillStyle=f.c;x.fillText(f.s,a,b-44-(.8-f.t)*40)});
  x.restore();
+ drawArrow();
  if(FLS){x.save();x.globalCompositeOperation='lighter';x.fillStyle='rgba('+FLS.c+','+(FLS.t/FLS.m*.35)+')';x.fillRect(0,0,W,H);x.restore()}
  if(P.hurt>0){x.fillStyle=`rgba(200,0,0,${P.hurt})`;x.fillRect(0,0,W,H)}}
+
+function drawArrow(){if(!g||g.f===0||dead)return;var t=null,lb='';
+ for(var i=0;i<g.mons.length;i++){var m=g.mons[i];if(m.mini||(g.isBoss&&!m.mid&&m.n===CH[P.chapter].boss.n)){t=m;lb=m.mini?'守關小王':'首領';break}}
+ if(!t&&g.st){t=g.st;lb='通道'}if(!t)return;
+ var dx=((t.x-t.y)-(P.x-P.y))*32*ZM,dy=((t.x+t.y)-(P.x+P.y))*16*ZM,cx=W/2,cy=H/2-20,mx=W/2-40,my=H/2-130,d=Math.round(Math.hypot(t.x-P.x,t.y-P.y)),k=1;
+ var ax=Math.abs(dx)||.01,ay=Math.abs(dy)||.01,on=ax<mx&&ay<my;
+ if(!on)k=Math.min(mx/ax,my/ay);if(on&&d<4)return;
+ var px=cx+dx*(on?1:k),py=cy+dy*(on?1:k),ang=Math.atan2(dy,dx),bob=Math.sin(performance.now()/180)*4;
+ x.save();x.textAlign='center';x.textBaseline='middle';
+ if(on){x.translate(px,py-50+bob);x.rotate(Math.PI/2)}else{x.translate(px,py);x.rotate(ang)}
+ x.fillStyle='#ffd35a';x.strokeStyle='#5a3b00';x.lineWidth=3;x.shadowColor='rgba(255,200,60,.8)';x.shadowBlur=10;
+ x.beginPath();x.moveTo(16,0);x.lineTo(-8,-13);x.lineTo(-3,0);x.lineTo(-8,13);x.closePath();x.stroke();x.fill();x.restore();
+ x.save();x.font='bold 13px sans-serif';x.textAlign='center';x.textBaseline='middle';var tx=px,ty=on?py-78+bob:py+(py<cy?24:-24);if(!on){tx=Math.max(50,Math.min(W-50,px-Math.cos(ang)*34));ty=py-Math.sin(ang)*34}
+ x.lineWidth=3;x.strokeStyle='rgba(0,0,0,.8)';x.fillStyle='#ffe9a0';var tt=lb+' '+d+'步';x.strokeText(tt,tx,ty);x.fillText(tt,tx,ty);x.restore()}
 function tick(t){const dt=Math.min(.05,(t-lt)/1000||0);lt=t;if(!dead&&$('pn').hidden)upd(dt);draw();if(++fr%6==0)ui();requestAnimationFrame(tick)}
 
 /* 8-bit 音樂：方波旋律（宮調五聲音階）+ 三角波低音 */
