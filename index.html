@@ -72,14 +72,145 @@ body.town .orb{border-color:#9a9ea6}
 body.town #mid{background:rgba(43,45,49,.55)}
 body.town button{background:#3d4046;border-color:#9a9ea6}
 body.town button:active,body.town button.on{background:#585c64}
+
+#act{max-width:calc(194px*var(--bs,1))}#act button{min-width:calc(42px*var(--bs,1));height:calc(42px*var(--bs,1));position:relative}
+#joy{transform:scale(var(--js,1));transform-origin:left bottom}body.joyR #joy{left:auto;right:14px;transform-origin:right bottom}
+.cdb::after{content:attr(data-cd);position:absolute;inset:0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:bold;color:#fff;text-shadow:0 0 3px #000;background:conic-gradient(rgba(0,0,0,.72) var(--cd,0deg),rgba(0,0,0,.12) 0);pointer-events:none}
+.nomp{filter:grayscale(1) brightness(.6)}
+#mm{position:absolute;right:6px;top:calc(env(safe-area-inset-top) + 6px);width:112px;height:112px;border:2px solid #9a8a4a;border-radius:8px;z-index:5;touch-action:manipulation}
+#bm{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9;gap:8px;color:#e0d4a0;font-size:13px}#bm[hidden]{display:none}
+#bmc{position:static;inset:auto;background:#000;border:2px solid #9a8a4a;border-radius:8px;touch-action:manipulation}
+#menuGrp button.on{background:#3b6a3b}
+#tut{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:10;padding:16px}#tut[hidden]{display:none}#tut .tb{background:#15111f;border:3px solid #9a8a4a;border-radius:12px;padding:14px;max-width:420px;line-height:1.7;font-size:14px}#tut p{margin:8px 0}
 </style></head><body>
 <div id="cw"><canvas id="c"></canvas>
 <div id="hud"><div id="h1"></div><div id="log"></div></div>
-<div id="joy"><i></i></div>
-<div id="bar"><div class="orb" id="ho"><i style="background:linear-gradient(#f55,#900)"></i><b id="ht"></b></div><div id="mid"><div id="act"><button id="bs" title="青竹蜂雲劍(空白)">⚔️</button><button id="bl" title="羅燕步(R)">👣</button><button id="bj" title="青元劍訣(F)">💠</button><button id="bx" title="血影遁(T)">🌑</button><button id="bc" title="淺藍冰焰(G)">❄️</button><button id="bp" title="培元丹(Q)">🧪</button><button id="bh" title="縮地符－返城(H)">🌀</button></div><button id="mbtn" title="選單">☰</button><div id="menuGrp" hidden><button data-t="裝備" title="裝備(C)">🛡️</button><button data-t="物品" title="物品(I)">🎒</button><button data-t="煉丹" title="煉丹">⚗️</button><button data-t="靈植" title="靈植">🌱</button><button data-t="靈寵" title="靈寵">🐾</button><button data-t="功法" title="功法(K)">📜</button><button data-t="章回" title="章回">📖</button><button data-t="丹藥" title="丹藥閣">🏺</button><button data-t="兵器" title="兵器閣">⚔️</button><button data-t="秘笈" title="秘笈閣">📚</button><button data-t="拍賣" title="拍賣會">🏮</button><button data-t="系統" title="存檔/系統">⚙️</button></div></div><div class="orb" id="mo"><i style="background:linear-gradient(#5af,#127)"></i><b id="mt"></b></div></div>
+<div id="joy"><i></i></div><canvas id="mm" width="224" height="224" title="點擊開啟大地圖"></canvas><div id="bm" hidden><div>點擊地圖任一處自動前往　<span style="color:#fff">●</span>你　<span style="color:#f33">●</span>小王/首領　<span style="color:#4df">●</span>通道　<span style="color:#fd4">●</span>寶物</div><canvas id="bmc"></canvas><button onclick="closeBig()">✖ 關閉</button></div>
+<div id="bar"><div class="orb" id="ho"><i style="background:linear-gradient(#f55,#900)"></i><b id="ht"></b></div><div id="mid"><div id="act"><button id="bs" title="青竹蜂雲劍(空白)">⚔️</button><button id="bl" title="羅燕步(R)">👣</button><button id="bj" title="青元劍訣(F)">💠</button><button id="bx" title="血影遁(T)">🌑</button><button id="bc" title="淺藍冰焰(G)">❄️</button><button id="bp" title="培元丹(Q)">🧪</button><button id="bh" title="縮地符－返城(H)">🌀</button></div><button id="mbtn" title="選單">☰</button><div id="menuGrp" hidden><button data-t="裝備" title="裝備(C)">🛡️</button><button data-t="物品" title="物品(I)">🎒</button><button data-t="煉丹" title="煉丹">⚗️</button><button data-t="靈植" title="靈植">🌱</button><button data-t="靈寵" title="靈寵">🐾</button><button data-t="功法" title="功法(K)">📜</button><button data-t="章回" title="章回">📖</button><button data-t="任務" title="每日任務／成就">📋</button><button data-t="丹藥" title="丹藥閣">🏺</button><button data-t="兵器" title="兵器閣">⚔️</button><button data-t="秘笈" title="秘笈閣">📚</button><button data-t="拍賣" title="拍賣會">🏮</button><button data-t="系統" title="存檔/系統">⚙️</button><button id="bnav" title="自動前往小王/通道">🧭</button><button id="bmap" title="大地圖(N)">🗺️</button><button id="bauto" title="自動戰鬥(Y)">🤖</button></div></div><div class="orb" id="mo"><i style="background:linear-gradient(#5af,#127)"></i><b id="mt"></b></div></div>
 </div>
-<div id="pn" hidden><div id="pb"><div id="tb"></div><div id="ms"></div><div id="pc"></div><button onclick="cls()">✖ 關閉</button></div></div>
+<div id="tut" hidden></div><div id="pn" hidden><div id="pb"><div id="tb"></div><div id="ms"></div><div id="pc"></div><button onclick="cls()">✖ 關閉</button></div></div>
 <script>
+/* ===== V6：戰鬥深度 ===== */
+var PJ=[],TG=[],HS=0,TS=0,PDT=0,TAG={range:'🏹',charge:'💢',bomb:'💣',sum:'🔮'};
+function pickBh(gf){var r=Math.random()*100;return r<50?'melee':r<68?'range':r<82?'charge':r<92?'bomb':(gf>=2?'sum':'melee')}
+function hurtP(dm){if(dead)return;if(P.iframe>0){flo(P.x,P.y,'完美閃避','#4f9');var n=performance.now();if(n-PDT>2000){PDT=n;P.mp=Math.min(P.mmp,P.mp+3);TS=.5;V('trail',P.x,P.y,{x2:P.x+.01,y2:P.y+.01,n:10})}return}
+ dm=Math.max(1,dm|0);P.hp-=dm;P.hurt=.25;flo(P.x,P.y,'-'+dm,'#f55');sfx(120);SHK=Math.max(SHK,.18);if(P.hp<=0){dead=1;say('💀 道消身殞。按任意鍵於本層復活（靈石-30%）')}}
+function kb(m,k){if(m.mini||m.bh=='boss')k*=.25;var a=Math.atan2(m.y-P.y,m.x-P.x);step(m,Math.cos(a)*k,Math.sin(a)*k,.3)}
+function shoot(m,ux,uy,col,dmg,sp){PJ.push({x:m.x,y:m.y,vx:ux*(sp||5),vy:uy*(sp||5),dmg:dmg||m.a*.8,t:2.2,col:col||'255,120,60'})}
+function tgAdd(x0,y0,r,d,dmg,col){TG.push({x:x0,y:y0,r:r,t:0,d:d,dmg:dmg,col:col||'255,60,60'})}
+function minion(m,n){for(var i=0;i<n;i++){var a=Math.random()*6.28,u=m.x+Math.cos(a)*1.4,v=m.y+Math.sin(a)*1.4;if(solid(u,v))continue;var s=mkMon(u,v,m.e,(m.base||m.n)+'仔',Math.max(6,m.mx*.12|0),Math.max(2,m.a*.5|0),0,Math.max(1,m.xp*.08|0),m.sp*1.1);s.minion=1;g.mons.push(s)}}
+function mAI(m,dt,spd,dx,dy,d){var bh=m.bh;if(!bh||bh=='melee')return false;var ux=dx/(d||1),uy=dy/(d||1);
+ if(bh=='range'||bh=='sum'){if(d<8){if(d>5.2)step(m,ux*spd*dt,uy*spd*dt,.3);else if(d<3)step(m,-ux*spd*dt,-uy*spd*dt,.3)}
+  if(bh=='range'&&d<8&&d>1&&m.cd<=0){m.cd=2.2;shoot(m,ux,uy)}
+  if(bh=='sum'){m.st2=(m.st2===undefined?3:m.st2)-dt;if(d<9&&m.st2<=0){m.st2=7;var c=0;for(var i=0;i<g.mons.length;i++)if(g.mons[i].minion)c++;if(c<4){minion(m,2);V('frost',m.x,m.y,{rad:1.2,n:10});flo(m.x,m.y,'召喚','#c9f')}}}
+  return true}
+ if(bh=='charge'){m.cs=m.cs||0;
+  if(m.cs==0){if(d<7&&d>.85)step(m,ux*spd*dt,uy*spd*dt,.3);else if(d<=.85&&m.cd<=0){m.cd=1.2;hurtP(Math.max(1,m.a-D()+R(3)))}
+   if(d<5&&d>1.6&&m.cd<=0){m.cs=1;m.ct=.7;m.cx=ux;m.cy=uy;m.cd=0}}
+  else if(m.cs==1){m.ct-=dt;if(m.ct<=0){m.cs=2;m.ct=.38;m.hd=0}}
+  else{m.ct-=dt;step(m,m.cx*9*dt,m.cy*9*dt,.3);if(!m.hd&&d<.9){m.hd=1;hurtP(m.a*1.3)}if(m.ct<=0){m.cs=0;m.cd=3.5;m.stun=.4}}
+  return true}
+ if(bh=='bomb'){if(m.fuse===undefined){if(d>1.2)step(m,ux*spd*1.5*dt,uy*spd*1.5*dt,.3);else m.fuse=.8}
+  else{m.fuse-=dt;if(m.fuse<=0){V('boom',m.x,m.y,{rad:1.7,n:16});shake(.3);if(dist(m,P)<1.7)hurtP(m.a*2.2);m.hp=0;kill(m)}}
+  return true}
+ if(bh=='mini'||bh=='boss'){var boss=bh=='boss';if(d<10&&d>1.2)step(m,ux*spd*dt,uy*spd*dt,.3);
+  if(d<=1.3&&m.cd<=0){m.cd=1.2;hurtP(Math.max(1,m.a-D()+R(3)))}
+  if(!m.rage&&m.hp<m.mx*.5){m.rage=1;m.sp*=1.3;flo(m.x,m.y,'狂暴！','#f44');shake(.5,'255,60,60');V('boom',m.x,m.y,{rad:2.5,n:20});minion(m,boss?3:2);say('⚠️ '+m.n+'進入狂暴！')}
+  m.bt=(m.bt===undefined?2.5:m.bt)-dt;
+  if(d<11&&m.bt<=0){m.bt=(boss?3.2:3.8)*(m.rage?.65:1);var pat=boss?R(4):R(2);
+   if(pat==0){tgAdd(P.x,P.y,boss?2:1.7,1.0,m.a*1.5);if(m.rage)tgAdd(P.x+(Math.random()-.5)*3,P.y+(Math.random()-.5)*3,1.5,1.2,m.a*1.2)}
+   else if(pat==1){for(var i=0;i<4;i++){var a=i*1.57+Math.random();tgAdd(P.x+Math.cos(a)*2,P.y+Math.sin(a)*2,1.3,1.1+i*.1,m.a*1.2)}}
+   else if(pat==2){tgAdd(m.x,m.y,3.2,1.2,m.a*1.4,'255,140,40')}
+   else{minion(m,2);flo(m.x,m.y,'召喚','#c9f')}}
+  return true}
+ return false}
+function updFight(dt){
+ for(var i=PJ.length-1;i>=0;i--){var p=PJ[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.t-=dt;if(p.t<=0||solid(p.x,p.y)){PJ.splice(i,1);continue}if(Math.hypot(p.x-P.x,p.y-P.y)<.45){hurtP(p.dmg);PJ.splice(i,1)}}
+ for(i=TG.length-1;i>=0;i--){var t=TG[i];t.t+=dt;if(t.t>=t.d){if(Math.hypot(t.x-P.x,t.y-P.y)<t.r)hurtP(t.dmg);V('boom',t.x,t.y,{rad:t.r,n:12});SHK=Math.max(SHK,.15);TG.splice(i,1)}}}
+function drawFight(pr){x.save();
+ TG.forEach(function(t){var a=pr(t.x,t.y),f=t.t/t.d;x.fillStyle='rgba('+t.col+','+(.12+.25*f)+')';x.strokeStyle='rgba('+t.col+',.9)';x.lineWidth=2;x.beginPath();x.ellipse(a[0],a[1],t.r*32,t.r*16,0,0,7);x.fill();x.stroke();x.fillStyle='rgba('+t.col+',.5)';x.beginPath();x.ellipse(a[0],a[1],t.r*32*f,t.r*16*f,0,0,7);x.fill()});
+ g.mons.forEach(function(m){if(m.cs==1){var a=pr(m.x,m.y),b=pr(m.x+m.cx*4,m.y+m.cy*4);x.strokeStyle='rgba(255,60,60,'+(.4+.4*Math.sin(performance.now()/60))+')';x.lineWidth=6;x.beginPath();x.moveTo(a[0],a[1]);x.lineTo(b[0],b[1]);x.stroke()}
+  if(m.fuse>0){var c=pr(m.x,m.y);x.strokeStyle='rgba(255,140,40,.9)';x.fillStyle='rgba(255,100,30,'+(.15+.3*(1-m.fuse/.8))+')';x.lineWidth=2;x.beginPath();x.ellipse(c[0],c[1],54,27,0,0,7);x.fill();x.stroke()}});
+ x.globalCompositeOperation='lighter';PJ.forEach(function(p){var a=pr(p.x,p.y);glow(a[0],a[1]-14,14,p.col,.9);glow(a[0],a[1]-14,6,'255,255,220',1)});x.restore()}
+
+/* ===== V6：成長系統（詞綴/套裝/符文/任務/成就/離線） ===== */
+var AFD=[['crit','暴擊率',3,8],['vamp','吸血',2,5],['frz','冰凍機率',6,14],['xp','修為加成',5,15],['gold','靈石加成',10,30],['mpr','回氣',1,3]],SETN=['青竹','玄冰','赤炎'];
+function rollAff(g){var n=g==0?0:g==1?(Math.random()<.5?1:0):g==2?1+R(2):2+R(2),a=[],pool=AFD.slice();for(var i=0;i<n&&pool.length;i++){var d=pool.splice(R(pool.length),1)[0];a.push([d[0],d[2]+R((d[3]-d[2]+1)*(1+g*.15)|0)])}return a}
+function AF(k){var t=0;for(var s in P.e){var o=P.e[s];if(o&&o.a)for(var i=0;i<o.a.length;i++)if(o.a[i][0]==k)t+=o.a[i][1]}return t}
+function SETB(){var c={},m=0;for(var s in P.e){var o=P.e[s];if(o&&o.s){c[o.s]=(c[o.s]||0)+1;if(c[o.s]>m)m=c[o.s]}}return m>=3?1.25:m>=2?1.1:1}
+function affTxt(o){var t='';if(o.s)t+='〔'+o.s+'套〕';if(o.a&&o.a.length){t+=' <small style="color:#9cf">'+o.a.map(function(a){var d=AFD.filter(function(z){return z[0]==a[0]})[0];return d[1]+'+'+a[1]+(a[0]=='mpr'?'':'%')}).join(' ')+'</small>'}return t}
+/* 符文 */
+var RUNE={luo:['無敵時間+30%','冷卻-30%','突進距離+35%'],qy:['威力+30%','冷卻-30%','範圍+35%'],xue:['威力+30%','冷卻-30%','索敵+35%'],bq:['威力+30%','冷卻-30%','範圍+35%']},RK=['pow','cd','rng'];
+function RR(id,t){var r=P.rune&&P.rune[id];if(r!=t)return 1;return t=='pow'?1.3:t=='cd'?.7:1.35}
+function setRune(id,k){P.rune=P.rune||{};P.rune[id]=P.rune[id]==k?null:k;pn('功法')}
+function runeUI(s,lvl){if(lvl<3)return'<br><small>（功法 Lv3 可解鎖符文）</small>';var cur=P.rune&&P.rune[s.id];return'<br>符文：'+RK.map(function(k,i){return'<button '+(cur==k?'class="on"':'')+' onclick="setRune(\''+s.id+'\',\''+k+'\')">'+RUNE[s.id][i]+'</button>'}).join('')}
+/* 每日任務 / 成就 */
+function dayKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
+function chkDay(){if(!P.dq||P.dq.d!=dayKey())P.dq={d:dayKey(),kills:0,minis:0,floors:0,cl:[0,0,0]};if(!P.ach)P.ach={kills:0,minis:0,floors:0,chap:0,cl:{}}}
+function cnt(k){chkDay();P.dq[k]=(P.dq[k]||0)+1;P.ach[k]=(P.ach[k]||0)+1}
+var DQ=[['擊殺 30 隻妖獸','kills',30,120,'pei',2],['擊敗 2 隻守關小王','minis',2,200,'ju',2],['通過 3 個關卡','floors',3,150,'zhu',1]],
+ACH=[['kills',100,'初試身手：累計擊殺 100 隻',200],['kills',500,'屠妖無數：累計擊殺 500 隻',800],['kills',2000,'血染人界：累計擊殺 2000 隻',3000],['minis',5,'斬將奪關：擊敗 5 隻守關小王',500],['minis',20,'關隘剋星：擊敗 20 隻守關小王',2000],['floors',10,'歷練有成：通過 10 個關卡',400],['floors',40,'踏遍天南：通過 40 個關卡',2000],['chap',1,'章回初成：通關 1 章',1000],['chap',3,'三章過後：通關 3 章',4000],['chap',5,'人界封頂：通關全部 5 章',10000]];
+function claim(t,i){chkDay();if(t=='d'){var q=DQ[i];if(P.dq.cl[i]||P.dq[q[1]]<q[2])return;P.dq.cl[i]=1;P.gold+=q[3];P.pill[q[4]]+=q[5];say('📋 每日任務完成：靈石+'+q[3]+'，'+{pei:'培元丹',ju:'聚氣丹',zhu:'築基丹'}[q[4]]+'×'+q[5])}
+ else{var a=ACH[i],id=a[0]+a[1];if(P.ach.cl[id]||P.ach[a[0]]<a[1])return;P.ach.cl[id]=1;P.gold+=a[3];say('🏅 成就達成：'+a[2]+'，靈石+'+a[3])}sfx(800);pn('任務')}
+function questUI(){chkDay();var h='<b>📋 每日任務</b>（每日重置）<br>';DQ.forEach(function(q,i){var v=Math.min(q[2],P.dq[q[1]]||0),ok=v>=q[2];h+=q[0]+' <small>'+v+'/'+q[2]+'</small> '+(P.dq.cl[i]?'<small>✅已領</small>':ok?'<button onclick="claim(\'d\','+i+')">領取 💎'+q[3]+'</button>':'<small>獎勵 💎'+q[3]+'＋丹藥</small>')+'<br>'});
+ h+='<hr><b>🏅 成就</b><br>';ACH.forEach(function(a,i){var id=a[0]+a[1],v=Math.min(a[1],P.ach[a[0]]||0),ok=v>=a[1];h+=a[2]+' <small>'+v+'/'+a[1]+'</small> '+(P.ach.cl[id]?'<small>✅</small>':ok?'<button onclick="claim(\'a\','+i+')">領取 💎'+a[3]+'</button>':'<small>💎'+a[3]+'</small>')+'<br>'});return h}
+/* 離線收益 */
+var OFF=null;
+function calcOff(){if(!P.ts)return;var m=Math.min(480,(Date.now()-P.ts)/60000|0);if(m>=5)OFF={m:m,gold:m*P.lv*2,xp:m*P.lv}}
+function applyOff(){if(!OFF)return;var o=OFF;OFF=null;P.gold+=o.gold;gain(o.xp);say('🌙 離線閉關 '+(o.m>=60?(o.m/60|0)+' 小時 ':'')+(o.m%60)+' 分鐘，收穫 💎'+o.gold+'、修為 '+o.xp+'（上限 8 小時）')}
+
+/* ===== V6：設定、操作手感、導航 ===== */
+var TUT=[['🕹️ 移動與攻擊','搖桿（電腦用 WASD）移動；靠近敵人會自動攻擊。想省力可到 ☰ 選單按 🤖 開啟「自動戰鬥」，會自動追擊、放功法、低血服丹。'],['📜 功法與冷卻','下方按鈕是功法，轉圈倒數代表冷卻中，變灰代表靈力不足。功法升到 Lv3 可在 ☰→📜 選擇符文。🌀 隨時返城，城中傳送陣可回到原關卡。'],['🧭 找路與目標','每關要先擊敗「守關小王」，通道會在它倒下的地方開啟。畫面箭頭、右上小地圖（點擊開大地圖）、☰→🧭 都能指路。小心地上的紅圈與 💢💣🏹🔮 標記的怪物！']];
+var TI=0;
+function showTut(){var d=document.getElementById('tut');if(!d)return;if(TI>=TUT.length){d.hidden=true;S.tut=1;saveS();return}d.hidden=false;d.innerHTML='<div class="tb"><b>'+TUT[TI][0]+'</b><p>'+TUT[TI][1]+'</p><button onclick="TI++;showTut()">'+(TI==TUT.length-1?'開始修仙':'下一步')+' ('+(TI+1)+'/'+TUT.length+')</button> <button onclick="TI=9;showTut()">略過</button></div>'}
+function chkBackup(){var n=Date.now();if(!S.lastExp){S.lastExp=n;saveS();return}if(n-S.lastExp>30*60000&&n-(S.rem||0)>30*60000){S.rem=n;saveS();say('💾 已超過 30 分鐘未匯出存檔！進度只存在這個瀏覽器，請到 ☰→⚙️ 匯出備份。')}}
+setInterval(chkBackup,60000);
+
+var S={mv:.45,sv:.6,q:1,btn:1,js:1,joy:0,auto:0,tut:0,lastExp:0};
+try{var _s=JSON.parse(localStorage.getItem('xxs')||'{}');for(var _k in _s)S[_k]=_s[_k]}catch(e){}
+function saveS(){try{localStorage.setItem('xxs',JSON.stringify(S))}catch(e){}}
+function applyS(){var d=document.documentElement;d.style.setProperty('--bs',S.btn);d.style.setProperty('--js',S.js);document.body.classList.toggle('joyR',!!S.joy);document.body.classList.toggle('lq',!S.q);if(typeof MA!='undefined'&&MA&&MA.volume>0)MA.volume=S.mv;var b=document.getElementById('bauto');if(b)b.classList.toggle('on',!!S.auto)}
+function sset(k,dl,mn,mx){S[k]=Math.round(Math.max(mn,Math.min(mx,S[k]+dl))*100)/100;saveS();applyS();pn('系統')}
+function stog(k){S[k]=S[k]?0:1;saveS();applyS();if(k=='auto')say(S.auto?'🤖 自動戰鬥開啟：自動追擊、施放功法、低血服丹':'🤖 自動戰鬥關閉');if(cur=='系統')pn('系統')}
+/* 路徑與自動移動 */
+var PATH=null,AST=0;
+function clearLine(a,b){var n=Math.ceil(Math.hypot(b.x-a.x,b.y-a.y)/.25);for(var i=1;i<n;i++){var t=i/n;if(solid(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t))return false}return true}
+function bfs(sx,sy,tx,ty){var G=g.G,M=g.M;if(tx<0||ty<0||tx>=G||ty>=G||M[ty][tx])return null;var prev=new Int32Array(G*G).fill(-1),q=[sy*G+sx],D4=[[1,0],[-1,0],[0,1],[0,-1]];prev[sy*G+sx]=sy*G+sx;
+ for(var h=0;h<q.length;h++){var c=q[h],cx=c%G,cy=(c/G)|0;if(cx==tx&&cy==ty)break;for(var d=0;d<4;d++){var nx=cx+D4[d][0],ny=cy+D4[d][1];if(nx<0||ny<0||nx>=G||ny>=G||M[ny][nx]||prev[ny*G+nx]>=0)continue;prev[ny*G+nx]=c;q.push(ny*G+nx)}}
+ if(prev[ty*G+tx]<0)return null;var p=[],c2=ty*G+tx;while(c2!=sy*G+sx){p.push({x:c2%G+.5,y:((c2/G)|0)+.5});c2=prev[c2]}return p.reverse()}
+function goTo(tx,ty){tx=tx|0;ty=ty|0;var p=bfs(P.x|0,P.y|0,tx,ty);if(!p){say('🧭 無法抵達該處');return false}PATH=p;say('🧭 自動前往中…（搖桿或方向鍵可中斷）');return true}
+function navTarget(){if(!g||dead)return;var t=null;for(var i=0;i<g.mons.length;i++){var m=g.mons[i];if(m.mini||(g.isBoss&&!m.mid&&m.n===CH[P.chapter].boss.n)){t=m;break}}if(!t&&g.st)t=g.st;if(!t)return say('🧭 本層沒有可前往的目標');goTo(t.x,t.y)}
+function pmove(dx,dy,dt,k){var n=Math.hypot(dx,dy)||1;step(P,dx/n*4.6*dt*(k||1),dy/n*4.6*dt*(k||1));lastMX=dx/n;lastMY=dy/n;var s=dx-dy;if(Math.abs(s/n)>.05)P.face=s<0?-1:1}
+function followPath(dt){if(!PATH)return;while(PATH.length&&Math.hypot(PATH[0].x-P.x,PATH[0].y-P.y)<.35)PATH.shift();if(!PATH.length){PATH=null;say('🧭 已抵達');return}
+ var t=PATH[0];for(var i=Math.min(PATH.length-1,8);i>0;i--){if(clearLine(P,PATH[i])){t=PATH[i];break}}pmove(t.x-P.x,t.y-P.y,dt,.95)}
+var ANT=0;
+function autoMove(dt){if(!S.auto||PATH||!g.f||dead)return;var nm=null,nd=6;for(var i=0;i<g.mons.length;i++){var d=dist(g.mons[i],P);if(d<nd){nd=d;nm=g.mons[i]}}
+ if(nm){if(nd>1.1)pmove(nm.x-P.x,nm.y-P.y,dt,.9);return}
+ ANT-=dt;if(ANT>0)return;ANT=1;var t=null,td=1e9;for(var j=0;j<g.mons.length;j++){var q=dist(g.mons[j],P);if(q<td){td=q;t=g.mons[j]}}if(!t&&g.st&&dist(g.st,P)>.8)t=g.st;if(t)goTo(t.x,t.y)}
+function autoSk(dt){AST-=dt;if(AST>0||!S.auto||dead||!g.f)return;AST=.35;var n=0;for(var i=0;i<g.mons.length;i++)if(dist(g.mons[i],P)<2.4)n++;
+ if(P.hp<P.mhp*.35&&P.pill.pei>0){usep('pei');return}if(!n)return;
+ if(P.skills.qy&&P.scd.qy<=0&&P.mp>=9)castQY();else if(P.skills.bq&&P.scd.bq<=0&&P.mp>=11&&n>=2)castBQ();else if(P.mp>=5&&P.sk<=0&&n>=3)sword()}
+/* 技能冷卻轉圈 */
+var CDM={};
+function cdUI(){var a=[['bs',P.sk,5],['bl',P.scd.luo,6],['bj',P.scd.qy,9],['bx',P.scd.xue,10],['bc',P.scd.bq,11]];
+ a.forEach(function(r){var b=document.getElementById(r[0]);if(!b)return;var cd=Math.max(0,r[1]||0);if(cd>(CDM[r[0]]||0))CDM[r[0]]=cd;if(cd<=0)CDM[r[0]]=0;
+  b.classList.toggle('cdb',cd>0);b.style.setProperty('--cd',(CDM[r[0]]?cd/CDM[r[0]]*360:0)+'deg');b.setAttribute('data-cd',cd>0?(cd<10?cd.toFixed(1):Math.ceil(cd)):'');b.classList.toggle('nomp',cd<=0&&P.mp<r[2]&&!b.disabled)})}
+/* 鎖定目標圈 */
+function drawTgt(pr){var m=null,nd=3.5;for(var i=0;i<g.mons.length;i++){var d=dist(g.mons[i],P);if(d<nd){nd=d;m=g.mons[i]}}if(!m)return;var a=pr(m.x,m.y),r=(m.mini?36:m.mid?26:20)+Math.sin(performance.now()/120)*2;x.save();x.strokeStyle='rgba(255,90,70,.9)';x.lineWidth=2;x.beginPath();x.ellipse(a[0],a[1],r,r*.5,0,0,7);x.stroke();x.restore()}
+/* 小地圖 / 大地圖 */
+function mapCells(c,cx,cy,sc,x0,y0,w,h){var ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle='rgba(8,8,14,.72)';ctx.fillRect(0,0,c.width,c.height);
+ for(var j=Math.max(0,y0);j<Math.min(g.G,y0+h);j++)for(var i=Math.max(0,x0);i<Math.min(g.G,x0+w);i++){if(!g.seen[j][i])continue;ctx.fillStyle=g.M[j][i]?'rgba(95,80,125,.95)':'rgba(215,210,195,.55)';ctx.fillRect((i-x0)*sc,(j-y0)*sc,sc,sc)}
+ var dot=function(u,v,col,r){var px=(u-x0)*sc,py=(v-y0)*sc;if(px<0||py<0||px>c.width||py>c.height)return;ctx.fillStyle=col;ctx.beginPath();ctx.arc(px,py,r,0,7);ctx.fill()};
+ g.it.forEach(function(o){if(g.seen[o.y|0][o.x|0])dot(o.x,o.y,'#fd4',Math.max(1.5,sc*.6))});
+ if(g.st&&g.seen[g.st.y|0][g.st.x|0])dot(g.st.x,g.st.y,'#4df',Math.max(3,sc*1.3));
+ if(g.cap&&!g.cap.freed)dot(g.cap.x,g.cap.y,'#5f5',Math.max(2.5,sc));
+ if(g.npc)g.npc.forEach(function(n){dot(n.x,n.y,'#fff',Math.max(2,sc))});
+ g.mons.forEach(function(m){if(m.mini||(g.isBoss&&!m.mid&&m.n===CH[P.chapter].boss.n))dot(m.x,m.y,'#f33',Math.max(4,sc*1.5));else if(m.mid&&dist(m,P)<12)dot(m.x,m.y,'#f93',Math.max(2.5,sc));else if(dist(m,P)<8)dot(m.x,m.y,'#c66',Math.max(1.5,sc*.7))});
+ dot(P.x,P.y,'#fff',Math.max(3,sc*1.2));if(PATH&&PATH.length){ctx.strokeStyle='rgba(120,255,160,.8)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo((P.x-x0)*sc,(P.y-y0)*sc);PATH.forEach(function(p){ctx.lineTo((p.x-x0)*sc,(p.y-y0)*sc)});ctx.stroke()}}
+function drawMM(){var c=document.getElementById('mm');if(!c||!g||!g.seen)return;var V=g.f===0?17:44,sc=c.width/V,x0=Math.round(P.x-V/2),y0=Math.round(P.y-V/2);if(g.f===0){x0=0;y0=0;sc=c.width/17}mapCells(c,0,0,sc,x0,y0,V,V)}
+function openBig(){var d=document.getElementById('bm'),c=document.getElementById('bmc'),s=Math.floor(Math.min(innerWidth,innerHeight)*.84/ (g.G));s=Math.max(2,s);c.width=c.height=s*g.G;c.style.width=c.style.height=c.width+'px';d.hidden=false;c._sc=s;mapCells(c,0,0,s,0,0,g.G,g.G)}
+function closeBig(){document.getElementById('bm').hidden=true}
+
 const $=i=>document.getElementById(i),cv=$('c'),x=cv.getContext('2d'),TW=64,TH=32,WH=34,R=n=>Math.random()*n|0;
 let W=cv.width=innerWidth,H=cv.height=innerHeight;
 addEventListener('resize',()=>{W=cv.width=innerWidth;H=cv.height=innerHeight});
@@ -130,10 +261,10 @@ const CH=[
 ];
 /* ===== 絕招 canvas 特效系統 ===== */
 var vfx=[],SHK=0,SHX=0,SHY=0,FLS=null;
-function V(k,x0,y0,o){o=o||{};var d={swarm:1,trail:.55,slash:.7,blood:.75,frost:1}[k]||.6,ps=[],n=o.n||26;
+function V(k,x0,y0,o){o=o||{};if(!S.q)o.n=((o.n||26)>>1)+3;var d={swarm:1,trail:.55,slash:.7,blood:.75,frost:1}[k]||.6,ps=[],n=o.n||26;
  for(var i=0;i<n;i++)ps.push({a:Math.random()*6.283,s:.5+Math.random(),r:Math.random(),l:Math.random()});
  vfx.push({k:k,x:x0,y:y0,x2:o.x2,y2:o.y2,t:0,d:d,ps:ps,rad:o.rad||2,lv:o.lv||1})}
-function shake(a,fl){SHK=Math.max(SHK,a);if(fl)FLS={t:.18,m:.18,c:fl}}
+function shake(a,fl){if(!S.q)return;SHK=Math.max(SHK,a);if(fl)FLS={t:.18,m:.18,c:fl}}
 function glow(X,Y,r,c,a){if(a<=0||r<=0)return;var g=x.createRadialGradient(X,Y,0,X,Y,r);g.addColorStop(0,'rgba('+c+','+a+')');g.addColorStop(1,'rgba('+c+',0)');x.fillStyle=g;x.beginPath();x.arc(X,Y,r,0,7);x.fill()}
 function ering(X,Y,r,c,a,w){x.strokeStyle='rgba('+c+','+Math.max(0,a)+')';x.lineWidth=w;x.beginPath();x.ellipse(X,Y,r,r*.5,0,0,7);x.stroke()}
 function drawV(v,pr){var p=v.t/v.d,q=1-p,a=pr(v.x,v.y),X=a[0],Y=a[1],k=v.k,i,s,R0=v.rad*32,ps=v.ps;
@@ -173,6 +304,8 @@ function drawV(v,pr){var p=v.t/v.d,q=1-p,a=pr(v.x,v.y),X=a[0],Y=a[1],k=v.k,i,s,R
    x.fillStyle='rgba(255,50,100,'+q+')';x.beginPath();x.arc(gx,gy,1.5+2*s.r,0,7);x.fill()}
   x.globalCompositeOperation='source-over';
   for(i=0;i<8;i++){s=ps[i];x.fillStyle='rgba(40,10,60,'+(.35*q)+')';x.beginPath();x.arc(X+(s.r-.5)*50,Y-10-p*50*s.s,10+p*18,0,7);x.fill()}}
+else if(k=='boom'){glow(X,Y-8,R0*(1.1+p*.5),'255,150,60',.55*q);ering(X,Y,R0*(.3+p*.9),'255,210,100',q,4);ering(X,Y,R0*(.15+p*.6),'255,255,255',q*.7,2);
+  for(i=0;i<ps.length;i++){s=ps[i];var d3=R0*(.2+p*1.1)*s.s;x.strokeStyle='rgba(255,200,90,'+q+')';x.lineWidth=2;x.beginPath();x.moveTo(X+Math.cos(s.a)*d3,Y-8+Math.sin(s.a)*d3*.5);x.lineTo(X+Math.cos(s.a)*(d3+12*q),Y-8+Math.sin(s.a)*(d3+12*q)*.5);x.stroke()}}
  else if(k=='frost'){var e2=Math.min(1,p*2.2);
   glow(X,Y,R0*1.1,'110,190,255',.25*q);
   ering(X,Y,R0*e2,'180,235,255',q,4);ering(X,Y,R0*e2*.7,'255,255,255',q*.6,2);
@@ -185,7 +318,7 @@ function drawV(v,pr){var p=v.t/v.d,q=1-p,a=pr(v.x,v.y),X=a[0],Y=a[1],k=v.k,i,s,R
  x.restore()}
 
 let g,P,pp,dead=0,LG=[],ac,tm,dp,KX=0,KY=0,JX=0,JY=0,camX=0,camY=0,fl=[],fx=[],lt=0,fr=0;
-const ev=k=>P.e[k]?P.e[k].v:0,A=()=>3+P.lv*2+ev('w')+(ev('r')>>1),D=()=>P.lv+ev('a')+(ev('r')>>1),dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),
+const ev=k=>P.e[k]?P.e[k].v:0,A=()=>(3+P.lv*2+ev('w')+(ev('r')>>1))*SETB()|0,D=()=>(P.lv+ev('a')+(ev('r')>>1))*SETB()|0,dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),
 solid=(u,v)=>(g.M[v|0]||[])[u|0]!==0,flo=(u,v,s,c)=>fl.push({x:u,y:v,s,c,t:.8}),
 mkMon=(u,v,e,n,hp,a,d,xp,sp)=>({x:u,y:v,e,n,hp,mx:hp,a,def:d,xp,sp,cd:1});
 /* 圖鑑素材（取自使用者上傳的美術圖集，座標為 [sx,sy,sw,sh]）；找不到對應者一律回退使用 emoji */
@@ -215,7 +348,7 @@ function step(o,dx,dy,r=.28){for(const[a,b]of[[dx,0],[0,dy]]){const nx=o.x+a,ny=
 /* 開闊迷宮：遞迴回溯 → 走道放大為 3 格寬 → 挖大廳 → 打通牆壁成環路 */
 function init(reset,f=1){
  if(reset)P=newP(),LG=[];
- dead=0;fl=[];fx=[];
+ dead=0;fl=[];fx=[];PATH=null;PJ=[];TG=[];
  if(f===0)return initTown();
  P.floor=f;
  const k=32,N=2*k+1,m=Array.from({length:N},()=>Array(N).fill(1)),st=[[1,1]];m[1][1]=0;
@@ -232,13 +365,13 @@ function init(reset,f=1){
  const ch=CH[P.chapter],zn=ch.zones,zi=f-1,isBoss=f===zn.length,isFinal=isBoss&&P.chapter===CH.length-1,gf=P.chapter*zn.length+f,kk=1+.28*(gf-1);
  g={f,zi,M,G,seen:M.map(r=>r.map(()=>0)),mons:[],it:[],st:null,isBoss,bossDone:false,quest:{...zn[zi].quest},cap:null};
  {const pl=WTP(zn[zi].n);g.wt=WT[pl[R(pl.length)]]}
- for(let i=0;i<(6+(gf*1.6|0))*4;i++){const[u,v]=rest.pop(),t=ch.mo[R(ch.mo.length)];g.mons.push(mkMon(u,v,t[0],t[1],t[2]*kk|0,t[3]+gf,t[4],t[5]*gf,1.5+.12*gf))}
+ for(let i=0;i<(6+(gf*1.6|0))*4;i++){const[u,v]=rest.pop(),t=ch.mo[R(ch.mo.length)];{const mo=mkMon(u,v,t[0],t[1],t[2]*kk|0,t[3]+gf,t[4],t[5]*gf,1.5+.12*gf);mo.bh=pickBh(gf);g.mons.push(mo)}}
  if(g.quest.t=='rescue'&&!isBoss&&rest.length){const[u,v]=rest.pop();g.cap={x:u,y:v,freed:false}}
  else if(g.quest.t=='guard'){g.quest.timer=45;g.quest.spawnT=6}
  for(let i=0;i<32&&rest.length;i++){const[u,v]=rest.pop();g.it.push({x:u,y:v})}
- for(let i=0;i<3&&rest.length;i++){const[u,v]=rest.pop(),t=ch.mo[R(ch.mo.length)],mm=mkMon(u,v,t[0],t[1]+'頭目',t[2]*kk*2|0,(t[3]+gf)*1.2|0,t[4]+1,t[5]*gf*2,1.4+.11*gf);mm.mid=1;mm.base=t[1];g.mons.push(mm)}
- if(isBoss){const b=ch.boss;g.mons.push(mkMon(far[0],far[1],b.e,b.n,b.hp,b.a,b.d,b.xp,b.sp))}
- else{const t=ch.mo[R(ch.mo.length)],mb=mkMon(far[0],far[1],t[0],'守關'+t[1]+'王',t[2]*kk*5|0,(t[3]+gf)*1.5|0,t[4]+2,t[5]*gf*6,1.3+.1*gf);mb.mini=1;mb.base=t[1];g.mons.push(mb)}
+ for(let i=0;i<3&&rest.length;i++){const[u,v]=rest.pop(),t=ch.mo[R(ch.mo.length)],mm=mkMon(u,v,t[0],t[1]+'頭目',t[2]*kk*2|0,(t[3]+gf)*1.2|0,t[4]+1,t[5]*gf*2,1.4+.11*gf);mm.mid=1;mm.bh='charge';mm.base=t[1];g.mons.push(mm)}
+ if(isBoss){const b=ch.boss,bm=mkMon(far[0],far[1],b.e,b.n,b.hp,b.a,b.d,b.xp,b.sp);bm.bh='boss';g.mons.push(bm)}
+ else{const t=ch.mo[R(ch.mo.length)],mb=mkMon(far[0],far[1],t[0],'守關'+t[1]+'王',t[2]*kk*5|0,(t[3]+gf)*1.5|0,t[4]+2,t[5]*gf*6,1.3+.1*gf);mb.mini=1;mb.bh='mini';mb.base=t[1];g.mons.push(mb)}
  P.x=P.y=2.5;pp={x:2.5,y:2.5,cd:0};camX=0;camY=(P.x+P.y)*16-H/2+H/2;camX=(P.x-P.y)*32;camY=(P.x+P.y)*16;
  say(`【${ch.town}篇・${zn[zi].n}】第${f}/${zn.length}關── ${zn[zi].quest.d}`);ui()}
 function initTown(){const N=17,M=Array.from({length:N},(_,j)=>Array.from({length:N},(_,i)=>(i==0||j==0||i==N-1||j==N-1)?1:0));
@@ -258,29 +391,29 @@ function ui(){const r=RE[Math.min(4,(P.lv-1)/3|0)]+((P.lv-1)%3+1)+'層',chn=CH[P
  SK.forEach(s=>{const b=$(SB[s.id]);if(!b)return;const lv=P.skills[s.id]||0;b.classList.toggle('off',!lv);b.innerHTML=iconHTML(s.spr,s.icon,26)+(lv?`<i class="lv">${lv}</i>`:'');b.disabled=!lv})}
 
 /* 即時戰鬥 */
-function hit(m){const c=Math.random()<.12,d=Math.max(1,A()-m.def+R(3))*(c?2:1);m.hp-=d;flo(m.x,m.y,(c?'暴擊 ':'')+'-'+d,c?'#fc4':'#fff');fx.push({x:m.x,y:m.y,t:.25,e:'💥'});sfx(300);if(m.hp<=0)kill(m)}
-function gain(n){P.xp+=n;while(P.xp>=P.lv*20){P.xp-=P.lv*20;P.lv++;P.mhp+=12;P.mmp+=3;P.hp=P.mhp;P.mp=P.mmp;say(`✨ 突破至 Lv${P.lv}！`);flo(P.x,P.y,'境界突破！','#4f9');sfx(880)}}
+function hit(m){const c=Math.random()<.12+AF('crit')/100,d=Math.max(1,A()-m.def+R(3))*(c?2:1);m.hp-=d;if(AF('vamp'))P.hp=Math.min(P.mhp,P.hp+Math.ceil(d*AF('vamp')/100));if(AF('frz')&&Math.random()<AF('frz')/100){m.slowT=2.5;flo(m.x,m.y,'冰凍','#8cf')}flo(m.x,m.y,(c?'暴擊 ':'')+'-'+d,c?'#fc4':'#fff');fx.push({x:m.x,y:m.y,t:.25,e:'💥'});sfx(300);kb(m,.3);HS=c?.08:.035;if(m.hp<=0)kill(m)}
+function gain(n){P.xp+=Math.round(n*(1+AF('xp')/100));while(P.xp>=P.lv*20){P.xp-=P.lv*20;P.lv++;P.mhp+=12;P.mmp+=3;P.hp=P.mhp;P.mp=P.mmp;say(`✨ 突破至 Lv${P.lv}！`);flo(P.x,P.y,'境界突破！','#4f9');sfx(880)}}
 function pxp(p,n){p.xp+=n;while(p.xp>=p.lv*30){p.xp-=p.lv*30;p.lv++;say(`${p.e}${p.n} 成長至 Lv${p.lv}！`)}}
-function kill(m){g.mons.splice(g.mons.indexOf(m),1);say(`斬殺${m.n}，得修為${m.xp}`);
+function kill(m){g.mons.splice(g.mons.indexOf(m),1);if(!m.minion||true){cnt('kills');if(m.mini)cnt('minis')}say(`斬殺${m.n}，得修為${m.xp}`);
  if(m.mid){gear();say('🗡️ 頭目伏誅，掉落一件裝備')}
  if(m.mini){g.st={x:m.x,y:m.y};g.seen[m.y|0][m.x|0]=1;gear();V('swarm',m.x,m.y,{rad:2.5,n:20});shake(.5,'255,230,160');say('🌀 守關小王伏誅，通道於其隕落之處開啟！')}
  if(Math.random()<.3)g.it.push({x:m.x,y:m.y});const pt=P.pets[P.pa];if(pt)pxp(pt,2);
  if(g.isBoss&&m.n===CH[P.chapter].boss.n){
-  if(P.chapter===CH.length-1){dead=2;say(`🎉 ${m.n}伏誅，人界大戰落幕，你踏上飛升之路！按任意鍵再入輪迴`);return}
-  g.bossDone=true;g.st={x:m.x,y:m.y};g.seen[m.y|0][m.x|0]=1;say(`⚔️ ${m.n}伏誅！【${CH[P.chapter].town}篇】至此告一段落，傳送陣已開啟，返城即可踏上下一段旅途。`)
+  if(P.chapter===CH.length-1){cnt('chap');dead=2;say(`🎉 ${m.n}伏誅，人界大戰落幕，你踏上飛升之路！按任意鍵再入輪迴`);return}
+  cnt('chap');g.bossDone=true;g.st={x:m.x,y:m.y};g.seen[m.y|0][m.x|0]=1;say(`⚔️ ${m.n}伏誅！【${CH[P.chapter].town}篇】至此告一段落，傳送陣已開啟，返城即可踏上下一段旅途。`)
  }
  gain(m.xp)}
-function mkGear(f){const r=Math.random()*100,gi=r<1+f*.5?3:r<8+f*1.5?2:r<30+f*3?1:0,k='war'[R(3)],v=Math.round((2+f*2+R(3))*GR[gi][2]);return{k,g:gi,v,n:{w:WN,a:AN,r:RN}[k][R(3)]}}
+function mkGear(f){const r=Math.random()*100,gi=r<1+f*.5?3:r<8+f*1.5?2:r<30+f*3?1:0,k='war'[R(3)],v=Math.round((2+f*2+R(3))*GR[gi][2]);const o={k,g:gi,v,n:{w:WN,a:AN,r:RN}[k][R(3)],a:rollAff(gi)};if(gi>=2&&Math.random()<.5)o.s=SETN[R(3)];return o}
 function gear(){const o=mkGear(P.chapter*3+g.f);if(!P.e[o.k])P.e[o.k]=o;else if(P.bag.length<20)P.bag.push(o);else P.gold+=o.v*3;say(`獲得 ${it(o)}`)}
 function loot(){const k=R(20),r=Math.random(),gf=P.chapter*3+g.f;
  if(k<4){P.pill.pei++;say('拾得 🧪 培元丹')}else if(k<5){P.pill.ju++;say('拾得 聚氣丹')}
- else if(k<7){const n=10+R(20)*gf;P.gold+=n;say(`拾得 💎 靈石×${n}`)}
+ else if(k<7){const n=Math.round((10+R(20)*gf)*(1+AF('gold')/100));P.gold+=n;say(`拾得 💎 靈石×${n}`)}
  else if(k<10){const t=r<.06?1:0;P.herb[t]++;say(`採得 🌿${HN[t]}靈草`)}
  else if(k<11){P.egg++;say('拾得 🥚 靈獸卵')}
  else if(k<13){const s=SK[R(SK.length)];P.skills[s.id]=(P.skills[s.id]||0)+1;say(`📜 拾得${s.book}，${P.skills[s.id]>1?'功法精進至 Lv'+P.skills[s.id]:'習得新功法 '+s.icon+s.name}`);sfx(760)}
  else gear()}
 function sword(){if(dead)return rez();if(P.mp<5||P.sk>0)return;P.mp-=5;P.sk=2.5;let n=0;
- for(const m of[...g.mons])if(dist(m,P)<=3){m.hp-=Math.max(1,A()*1.5-m.def|0);flo(m.x,m.y,'劍','#5af');n++;if(m.hp<=0)kill(m)}
+ for(const m of[...g.mons])if(dist(m,P)<=3){m.hp-=Math.max(1,A()*1.5-m.def|0);flo(m.x,m.y,'劍','#5af');n++;kb(m,.5);if(m.hp<=0)kill(m)}
  V('swarm',P.x,P.y,{rad:3,n:22});shake(.3,'120,255,160');say(n?`青竹蜂雲劍出鞘，命中 ${n} 敵`:'劍氣落空');sfx(650)}
 function usep(k){if(dead)return rez();if(P.pill[k]<1)return say('沒有此丹藥');P.pill[k]--;
  if(k=='pei'){P.hp=Math.min(P.mhp,P.hp+P.mhp*.4|0);P.mp=Math.min(P.mmp,P.mp+5)}else if(k=='ju')P.mp=Math.min(P.mmp,P.mp+15);else gain(60);
@@ -288,23 +421,23 @@ function usep(k){if(dead)return rez();if(P.pill[k]<1)return say('沒有此丹藥
 const pot=()=>usep('pei');
 let lastMX=0,lastMY=1,npcCD=0;
 function castLuo(){if(dead)return rez();const lvl=P.skills.luo;if(!lvl)return say('尚未習得《羅燕步》，須從敵人、寶箱或坊市尋得秘笈');
- if(P.mp<6||P.scd.luo>0)return;P.mp-=6;P.scd.luo=5;const ox0=P.x,oy0=P.y,tot=1.6+lvl*.5,n=8;
+ if(P.mp<6||P.scd.luo>0)return;P.mp-=6;P.scd.luo=5*RR('luo','cd');const ox0=P.x,oy0=P.y,tot=(1.6+lvl*.5)*RR('luo','rng'),n=8;
  for(let i=0;i<n;i++)step(P,lastMX*tot/n,lastMY*tot/n,.28);
- P.iframe=.5+lvl*.05;V('trail',ox0,oy0,{x2:P.x,y2:P.y,n:18});say('羅燕步，身形如飛燕掠過');sfx(500)}
+ P.iframe=(.5+lvl*.05)*RR('luo','pow');V('trail',ox0,oy0,{x2:P.x,y2:P.y,n:18});say('羅燕步，身形如飛燕掠過');sfx(500)}
 function castQY(){if(dead)return rez();const lvl=P.skills.qy;if(!lvl)return say('尚未習得《青元劍訣》，須從敵人、寶箱或坊市尋得秘笈');
- if(P.mp<9||P.scd.qy>0)return;P.mp-=9;P.scd.qy=3.5;let n=0;const rad=1.8+lvl*.2;
- for(const m of[...g.mons])if(dist(m,P)<=rad){const d=Math.max(1,A()*(2.4+lvl*.3)-m.def|0);m.hp-=d;flo(m.x,m.y,'-'+d,'#5ff');fx.push({x:m.x,y:m.y,t:.3,e:'💠'});n++;if(m.hp<=0)kill(m)}
+ if(P.mp<9||P.scd.qy>0)return;P.mp-=9;P.scd.qy=3.5*RR('qy','cd');let n=0;const rad=(1.8+lvl*.2)*RR('qy','rng');
+ for(const m of[...g.mons])if(dist(m,P)<=rad){const d=Math.max(1,A()*(2.4+lvl*.3)*RR('qy','pow')-m.def|0);m.hp-=d;flo(m.x,m.y,'-'+d,'#5ff');fx.push({x:m.x,y:m.y,t:.3,e:'💠'});n++;kb(m,.8);HS=.05;if(m.hp<=0)kill(m)}
  V('slash',P.x,P.y,{rad:rad,n:20});shake(.55,'100,255,255');say(n?`青元劍訣貫穿 ${n} 敵`:'劍氣落空');sfx(750)}
 function castXue(){if(dead)return rez();const lvl=P.skills.xue;if(!lvl)return say('尚未習得《血影遁》，須從敵人、寶箱或坊市尋得秘笈');
- let t=null,td=8;for(const m of g.mons){const d=dist(m,P);if(d<td){td=d;t=m}}
- if(!t)return say('周圍並無可遁襲之敵');if(P.mp<10||P.scd.xue>0)return;P.mp-=10;P.scd.xue=6;
+ let t=null,td=8*RR('xue','rng');for(const m of g.mons){const d=dist(m,P);if(d<td){td=d;t=m}}
+ if(!t)return say('周圍並無可遁襲之敵');if(P.mp<10||P.scd.xue>0)return;P.mp-=10;P.scd.xue=6*RR('xue','cd');
  const ang=Math.atan2(P.y-t.y,P.x-t.x),nx=t.x+Math.cos(ang)*.6,ny=t.y+Math.sin(ang)*.6;
  const ox1=P.x,oy1=P.y;if(!solid(nx,ny)){P.x=nx;P.y=ny}V('blood',t.x,t.y,{x2:ox1,y2:oy1,n:18});shake(.3);
- const d=Math.max(1,A()*(2+lvl*.4)-t.def|0);t.hp-=d;flo(t.x,t.y,'-'+d,'#c5f');fx.push({x:t.x,y:t.y,t:.3,e:'🌑'});P.iframe=.3;
+ const d=Math.max(1,A()*(2+lvl*.4)*RR('xue','pow')-t.def|0);t.hp-=d;flo(t.x,t.y,'-'+d,'#c5f');fx.push({x:t.x,y:t.y,t:.3,e:'🌑'});P.iframe=.3;
  say('血影遁，遁形突襲！');sfx(300);if(t.hp<=0)kill(t)}
 function castBQ(){if(dead)return rez();const lvl=P.skills.bq;if(!lvl)return say('尚未習得《淺藍冰焰》，須從敵人、寶箱或坊市尋得秘笈');
- if(P.mp<11||P.scd.bq>0)return;P.mp-=11;P.scd.bq=6;let n=0;const rad=2+lvl*.25;
- for(const m of g.mons)if(dist(m,P)<=rad){const d=Math.max(1,A()*1.4+lvl*3-m.def|0);m.hp-=d;m.slowT=2+lvl*.4;flo(m.x,m.y,'-'+d,'#8cf');fx.push({x:m.x,y:m.y,t:.3,e:'❄️'});n++;if(m.hp<=0)kill(m)}
+ if(P.mp<11||P.scd.bq>0)return;P.mp-=11;P.scd.bq=6*RR('bq','cd');let n=0;const rad=(2+lvl*.25)*RR('bq','rng');
+ for(const m of g.mons)if(dist(m,P)<=rad){const d=Math.max(1,(A()*1.4+lvl*3)*RR('bq','pow')-m.def|0);m.hp-=d;m.slowT=2+lvl*.4;flo(m.x,m.y,'-'+d,'#8cf');fx.push({x:m.x,y:m.y,t:.3,e:'❄️'});n++;if(m.hp<=0)kill(m)}
  V('frost',P.x,P.y,{rad:rad,n:30});shake(.35,'140,200,255');say(n?`淺藍冰焰凍燒 ${n} 敵`:'寒焰消散於無形');sfx(700)}
 function rez(){if(dead==1){P.hp=P.mhp;P.mp=P.mmp;P.gold=P.gold*.7|0;init(0,g.f)}else init(0,1)}
 function portalTown(){if(dead)return rez();if(g.f===0)return say('已身處城中');P.floor=g.f;P.hp=Math.min(P.mhp,P.hp+P.mhp*.2|0);sfx(600);const chn=CH[P.chapter];say(`🌀 縮地符發動，瞬息返城！（下次可由城中傳送陣直接回到${chn.zones[g.zi].n}第${g.f}關）`);init(0,0)}
@@ -312,17 +445,22 @@ function portalTown(){if(dead)return rez();if(g.f===0)return say('已身處城�
 function upd(dt){
  const sx=KX+JX,sy=KY+JY,l=Math.min(1,Math.hypot(sx,sy));
  if(l>.05){const wx=sx/TW+sy/TH,wy=sy/TH-sx/TW,n=Math.hypot(wx,wy);step(P,wx/n*l*4.6*dt,wy/n*l*4.6*dt);lastMX=wx/n;lastMY=wy/n;const scr=wx-wy;if(Math.abs(scr)>.02)P.face=scr<0?-1:1}
- P.mp=Math.min(P.mmp,P.mp+dt*.6);P.cd-=dt;P.sk-=dt;P.hurt-=dt;P.iframe-=dt;npcCD-=dt;for(const k in P.scd)P.scd[k]=Math.max(0,P.scd[k]-dt);
+ if(l>.05)PATH=null;else{followPath(dt);autoMove(dt)}autoSk(dt);
+ P.mp=Math.min(P.mmp,P.mp+dt*(.6+AF('mpr')*.3));P.cd-=dt;P.sk-=dt;P.hurt-=dt;P.iframe-=dt;npcCD-=dt;for(const k in P.scd)P.scd[k]=Math.max(0,P.scd[k]-dt);
  let nm=null,nd=1.4;for(const m of g.mons){const d=dist(m,P);if(d<nd){nd=d;nm=m}}
  if(nm&&P.cd<=0){P.cd=.6;hit(nm)}
- if(!dead)for(const m of g.mons){m.cd-=dt;if(m.slowT>0)m.slowT-=dt;const spd=m.sp*(m.slowT>0?.4:1),dx=P.x-m.x,dy=P.y-m.y,d=Math.hypot(dx,dy);
+ if(!dead)for(const m of [...g.mons]){if(g.mons.indexOf(m)<0)continue;m.cd-=dt;if(m.slowT>0)m.slowT-=dt;const spd=m.sp*(m.slowT>0?.4:1),dx=P.x-m.x,dy=P.y-m.y,d=Math.hypot(dx,dy);
+  if(m.stun>0){m.stun-=dt;continue}
+  if(mAI(m,dt,spd,dx,dy,d))continue;
   if(d<7&&d>.85)step(m,dx/d*spd*dt,dy/d*spd*dt,.3);
-  else if(d<=.85&&m.cd<=0){m.cd=1.2;if(P.iframe>0){flo(P.x,P.y,'閃避','#4f9')}else{const dm=Math.max(1,m.a-D()+R(3));P.hp-=dm;P.hurt=.25;flo(P.x,P.y,'-'+dm,'#f55');sfx(120);if(P.hp<=0){dead=1;say('💀 道消身殞。按任意鍵於本層復活（靈石-30%）')}}}}
+  else if(d<=.85&&m.cd<=0){m.cd=1.2;hurtP(Math.max(1,m.a-D()+R(3)))}}
+ updFight(dt);
  const pt=P.pets[P.pa];if(pt&&!dead){pp.cd-=dt;const d=dist(pp,P);if(d>1.3)step(pp,(P.x-pp.x)/d*4.8*dt,(P.y-pp.y)/d*4.8*dt,.25);if(d>8){pp.x=P.x;pp.y=P.y}
   if(pp.cd<=0){let t=null,td=2.8;for(const m of g.mons){const q=dist(m,pp);if(q<td){td=q;t=m}}
    if(t){pp.cd=1.2;const dm=Math.max(1,pa(pt)-t.def+R(2));t.hp-=dm;flo(t.x,t.y,'-'+dm,'#9f9');fx.push({x:t.x,y:t.y,t:.2,e:'✨'});if(t.hp<=0)kill(t)}}}
- for(let i=g.it.length-1;i>=0;i--)if(dist(g.it[i],P)<.6){g.it.splice(i,1);loot()}
- if(g.npc)for(const n of g.npc)if(dist(n,P)<.8&&npcCD<=0&&$('pn').hidden){pn(n.t);npcCD=1;break}
+ for(let i=g.it.length-1;i>=0;i--){const o=g.it[i],d=dist(o,P);if(d<.6){g.it.splice(i,1);loot()}else if(d<2.6){o.x+=(P.x-o.x)/d*5.5*dt;o.y+=(P.y-o.y)/d*5.5*dt}}
+ if(!$('pn').hidden&&SHT.indexOf(cur)>=0&&!nearNpc(cur)){cls();say('已離開 NPC，交易結束')}
+ if(NPCT&&$('pn').hidden&&dist(NPCT,P)<1.6){const n=NPCT;NPCT=null;PATH=null;pn(n.t);npcCD=1}if(g.f!==0)NPCT=null
  if(g.cap&&!g.cap.freed&&!dead&&dist(g.cap,P)<.8){g.cap.freed=true;say('🙇 救出受困之人，隨行返回傳送陣！');fx.push({x:g.cap.x,y:g.cap.y,t:.5,e:'✨'});sfx(760)}
  if(g.cap&&g.cap.freed&&!dead){const d=dist(g.cap,P);if(d>1.2)step(g.cap,(P.x-g.cap.x)/d*4*dt,(P.y-g.cap.y)/d*4*dt,.25);if(d>9){g.cap.x=P.x;g.cap.y=P.y}}
  if(g.quest&&g.quest.t=='guard'&&g.quest.timer>0&&!dead){const was=g.quest.timer;g.quest.timer-=dt;g.quest.spawnT-=dt;
@@ -335,7 +473,7 @@ function upd(dt){
    if(g.quest&&g.quest.t=='treasure'&&!g.quest.given){g.quest.given=true;gear();say('🏆 順利奪得寶物！')}
    else if(g.quest&&g.quest.t=='rescue'&&g.cap){if(g.cap.freed){P.gold+=40+g.f*10;gain(20);say('🙇 平安救回同伴，獲得額外靈石與修為獎勵！')}else say('（未能救出受困者，殊為可惜…）')}
    P.hp=Math.min(P.mhp,P.hp+P.mhp*.3|0);sfx(700);
-   if(g.isBoss){P.chapter++;P.floor=1;init(0,0)}else init(0,g.f+1)
+   cnt('floors');if(g.isBoss){P.chapter++;P.floor=1;init(0,0)}else init(0,g.f+1)
   }
  }
  for(let v=P.y-7|0;v<=P.y+7;v++)for(let u=P.x-7|0;u<=P.x+7;u++)if(g.seen[v]&&g.seen[v][u]===0&&Math.hypot(u+.5-P.x,v+.5-P.y)<=7)g.seen[v][u]=1;
@@ -354,7 +492,7 @@ function draw(){x.fillStyle='#07060c';x.fillRect(0,0,W,H);x.save();x.scale(ZM,ZM
  for(let j=j0;j<=j1;j++)for(let i=i0;i<=i1;i++){if(!g.seen[j][i])continue;const v=vis(i,j),w=g.M[j][i];
   if(w){if(!TM){x.globalAlpha=v?1:.4;poly([pr(i,j),pr(i+1,j),pr(i+1,j+1),pr(i,j+1)],FC[(i+j)&1]);x.globalAlpha=1}list.push({d:i+j+1,f:()=>{x.globalAlpha=TM&&!v?.4:1;const T=pr(i,j),Rr=pr(i+1,j),B=pr(i+1,j+1),L=pr(i,j+1),up=p=>[p[0],p[1]-WH];
    if(TM){poly([L,B,up(B),up(L)],WC[0]);poly([B,Rr,up(Rr),up(B)],WC[1]);poly([up(T),up(Rr),up(B),up(L)],WC[2])}
-   else{const c=pr(i+.5,j+.5),we=WTH.e;x.fillStyle='rgba(0,0,0,.16)';x.beginPath();x.ellipse(c[0],c[1],26,13,0,0,7);x.fill();x.font='46px sans-serif';x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=5;x.shadowOffsetY=2;x.fillText(we,c[0],c[1]-8);x.fillText(we,c[0],c[1]-8-WH*.6);x.shadowColor='transparent';x.shadowBlur=0;x.shadowOffsetY=0}
+   else{const c=pr(i+.5,j+.5),we=WTH.e;x.fillStyle='rgba(0,0,0,.16)';x.beginPath();x.ellipse(c[0],c[1],26,13,0,0,7);x.fill();x.font='46px sans-serif';if(S.q){x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=5;x.shadowOffsetY=2}x.fillText(we,c[0],c[1]-8);x.fillText(we,c[0],c[1]-8-WH*.6);x.shadowColor='transparent';x.shadowBlur=0;x.shadowOffsetY=0}
    x.globalAlpha=1}})}
   else{x.globalAlpha=v?1:.4;poly([pr(i,j),pr(i+1,j),pr(i+1,j+1),pr(i,j+1)],FC[(i+j)&1]);x.globalAlpha=1}}
  const ent=(o,e,sz,spr,flip)=>list.push({d:o.x+o.y,f:()=>{const[a,b]=pr(o.x,o.y);x.fillStyle='rgba(0,0,0,.45)';x.beginPath();x.ellipse(a,b,sz*.5,sz*.22,0,0,7);x.fill();
@@ -366,9 +504,9 @@ function draw(){x.fillStyle='#07060c';x.fillRect(0,0,W,H);x.save();x.scale(ZM,ZM
  if(g.npc)g.npc.forEach(n=>ent(n,n.e,36,NPSPR[n.t]));
  if(g.cap)ent(g.cap,g.cap.freed?'🏃':'🙇',30);
  g.it.forEach(o=>vis(o.x-.5|0,o.y-.5|0)&&ent(o,'🎁',26,'gold'));
- g.mons.forEach(m=>Math.hypot(m.x-P.x,m.y-P.y)<=7&&ent(m,m.e,m.mini?68:m.mid?41:g.isBoss&&m.n===CH[P.chapter].boss.n?52:34,MOSPR[m.base||m.n]));
+ g.mons.forEach(m=>{if(Math.hypot(m.x-P.x,m.y-P.y)>7)return;ent(m,m.e,m.mini?68:m.mid?41:g.isBoss&&m.n===CH[P.chapter].boss.n?52:34,MOSPR[m.base||m.n]);if(m.bh&&TAG[m.bh])list.push({d:m.x+m.y+.01,f:()=>{const[a,b]=pr(m.x,m.y);x.font='14px sans-serif';x.fillText(TAG[m.bh],a+16,b-(m.mini?72:m.mid?46:38))}});});
  if(P.pets[P.pa])ent(pp,P.pets[P.pa].e,26);ent(P,'🧙',38,'swordsman',P.face>0);
- list.sort((a,b)=>a.d-b.d).forEach(o=>o.f());
+ list.sort((a,b)=>a.d-b.d).forEach(o=>o.f());if(g.f){drawTgt(pr);drawFight(pr)}
  if([[1,0],[0,1],[1,1]].some(([a,b])=>solid(P.x+a,P.y+b))){const[a,b]=pr(P.x,P.y);x.globalAlpha=.4;
   if(SPOK){const[sx,sy,sw,sh]=SPR.swordsman,dh=38*1.32,dw=dh*sw/sh;x.save();if(P.face>0){x.translate(a,0);x.scale(-1,1);x.translate(-a,0)}x.drawImage(SPI,sx,sy,sw,sh,a-dw/2,b-dh+38*.32,dw,dh);x.restore()}
   else{x.font='38px sans-serif';x.fillText('🧙',a,b-17)}
@@ -393,14 +531,17 @@ function drawArrow(){if(!g||g.f===0||dead)return;var t=null,lb='';
  x.beginPath();x.moveTo(16,0);x.lineTo(-8,-13);x.lineTo(-3,0);x.lineTo(-8,13);x.closePath();x.stroke();x.fill();x.restore();
  x.save();x.font='bold 13px sans-serif';x.textAlign='center';x.textBaseline='middle';var tx=px,ty=on?py-78+bob:py+(py<cy?24:-24);if(!on){tx=Math.max(50,Math.min(W-50,px-Math.cos(ang)*34));ty=py-Math.sin(ang)*34}
  x.lineWidth=3;x.strokeStyle='rgba(0,0,0,.8)';x.fillStyle='#ffe9a0';var tt=lb+' '+d+'步';x.strokeText(tt,tx,ty);x.fillText(tt,tx,ty);x.restore()}
-function tick(t){const dt=Math.min(.05,(t-lt)/1000||0);lt=t;if(!dead&&$('pn').hidden)upd(dt);draw();if(++fr%6==0)ui();requestAnimationFrame(tick)}
+function setUI(){const b=(l,f)=>`<button onclick="${f}">${l}</button>`,row=(n,k,mn,mx,dl,fmt)=>`${n} ${b('－',`sset('${k}',${-dl},${mn},${mx})`)} <b>${fmt(S[k])}</b> ${b('＋',`sset('${k}',${dl},${mn},${mx})`)}<br>`;
+ return '<hr>🎚️ <b>設定</b><br>'+row('音樂音量','mv',0,1,.1,v=>Math.round(v*100)+'%')+row('音效音量','sv',0,1,.1,v=>Math.round(v*100)+'%')+row('按鈕大小','btn',.8,1.6,.2,v=>Math.round(v*100)+'%')+row('搖桿大小','js',.8,1.6,.2,v=>Math.round(v*100)+'%')+
+ b('🕹️ 搖桿位置：'+(S.joy?'右':'左'),"stog('joy')")+' '+b('🖼️ 畫質：'+(S.q?'高':'省電'),"stog('q')")+' '+b('🤖 自動戰鬥：'+(S.auto?'開':'關'),"stog('auto')")+' '+b('📖 重看教學',"TI=0;cls();showTut()")+'<br><small>上次匯出存檔：'+(S.lastExp?Math.max(0,(Date.now()-S.lastExp)/60000|0)+' 分鐘前':'尚未')+'（存檔僅存於此瀏覽器，建議定期匯出）</small><br>'}
+function tick(t){const dt=Math.min(.05,(t-lt)/1000||0);lt=t;if(TS>0)TS-=dt;if(HS>0)HS-=dt;else if(!dead&&$('pn').hidden)upd(TS>0?dt*.35:dt);draw();cdUI();if(++fr%6==0){ui();drawMM()}requestAnimationFrame(tick)}
 
 /* 8-bit 音樂：方波旋律（宮調五聲音階）+ 三角波低音 */
 function au(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state=='suspended')ac.resume()}
-function tone(f,d,ty='square',v=.04){if(!ac)return;const o=ac.createOscillator(),n=ac.createGain(),t=ac.currentTime;o.type=ty;o.frequency.value=f;n.gain.setValueAtTime(v,t);n.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(n).connect(ac.destination);o.start(t);o.stop(t+d)}
+function tone(f,d,ty='square',v=.04){if(!ac)return;const o=ac.createOscillator(),n=ac.createGain(),t=ac.currentTime;o.type=ty;o.frequency.value=f;n.gain.setValueAtTime(v*S.sv/.6,t);n.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(n).connect(ac.destination);o.start(t);o.stop(t+d)}
 const sfx=f=>tone(f,.07,'square',.05),ML=[0,4,7,9,7,4,2,null,4,7,9,12,9,7,4,null,9,7,4,2,0,2,4,7,9,7,4,2,0,null,-3,null],BS=[0,-3,-5,-3];let s8=0;
 /* ===== 線上配樂（OpenGameArt，CC0）；不支援 OGG 或載入失敗時退回 8-bit 音樂 ===== */
-var MB='https://opengameart.org/sites/default/files/',MUS={town:['rpgcasaibgm_0.ogg','asianoriental1_0.ogg'],dun:['asianoriental2_0.ogg','dungeon_ambient_1_0.ogg'],boss:['dark_cavern_ambient_001.ogg','dark_cavern_ambient_002.ogg']},MA=null,MC='',MI=0,MON=true,MFAIL=false,MVOL=.45,MFT=0,MST=false;
+var MB='https://opengameart.org/sites/default/files/',MUS={town:['rpgcasaibgm_0.ogg','asianoriental1_0.ogg'],dun:['asianoriental2_0.ogg','dungeon_ambient_1_0.ogg'],boss:['dark_cavern_ambient_001.ogg','dark_cavern_ambient_002.ogg']},MA=null,MC='',MI=0,MON=true,MFAIL=false,MFT=0,MST=false;
 try{if(localStorage.getItem('xxm')==='0')MON=false}catch(e){}
 function mCan(){try{var a=document.createElement('audio');return !!(a.canPlayType&&a.canPlayType('audio/ogg; codecs="vorbis"'))}catch(e){return false}}
 function mCtx(){if(g.f===0)return'town';if(g.isBoss&&!g.bossDone)return'boss';for(var i=0;i<g.mons.length;i++){var m=g.mons[i];if(m.mini&&Math.hypot(m.x-P.x,m.y-P.y)<14)return'boss'}return'dun'}
@@ -408,7 +549,7 @@ function chip(on){if(on&&!tm){tm=setInterval(function(){var s=ML[s8%32];if(s!=nu
 function mFade(to,cb){clearInterval(MFT);MFT=setInterval(function(){if(!MA){clearInterval(MFT);return}var v=MA.volume,d=to-v;if(Math.abs(d)<.04){MA.volume=to;clearInterval(MFT);if(cb)cb()}else MA.volume=Math.max(0,Math.min(1,v+(d>0?.04:-.06)))},80)}
 function mSwitch(c){MC=c;var list=MUS[c],url=MB+list[MI++%list.length];
  if(!MA){MA=new Audio();MA.onended=function(){mSwitch(MC)};MA.onerror=function(){MFAIL=true;if(MON)chip(1)}}
- var go=function(){MA.src=url;MA.volume=0;var p=MA.play();if(p&&p.catch)p.catch(function(){MST=false});mFade(MVOL)};
+ var go=function(){MA.src=url;MA.volume=0;var p=MA.play();if(p&&p.catch)p.catch(function(){MST=false});mFade(S.mv)};
  if(MA.src&&!MA.paused&&MA.volume>0)mFade(0,go);else go()}
 function mStart(){if(MFAIL||!mCan()){chip(1);return}MST=true;mSwitch(mCtx())}
 function mStop(){chip(0);MST=false;if(MA){clearInterval(MFT);MA.pause()}MC=''}
@@ -420,12 +561,12 @@ setInterval(function(){if(MON&&MST&&!MFAIL&&g){var c=mCtx();if(c!==MC)mSwitch(c)
 
 /* 品級、面板、煉丹、靈植、靈寵、存檔 */
 const GR=[['法器','#ccc',1],['法寶','#5af',1.6],['古寶','#c6f',2.4],['通天靈寶','#fc4',3.5]],RN=['玉佩','儲物戒','靈環'],HN=['百年','千年','萬年'],GT=[60,180,480],
-PT=[['🐛','噬金蟲'],['🐺','靈狼'],['🦋','靈蝶']],TB=['裝備','物品','煉丹','靈植','靈寵','功法','章回','丹藥','兵器','秘笈','拍賣','系統'],
+PT=[['🐛','噬金蟲'],['🐺','靈狼'],['🦋','靈蝶']],TB=['裝備','物品','煉丹','靈植','靈寵','功法','章回','任務','丹藥','兵器','秘笈','拍賣','系統'],
 SK=[{id:'luo',icon:'👣',spr:'sk_wind',name:'羅燕步',book:'《羅燕步》身法秘笈',key:'R'},{id:'qy',icon:'💠',spr:'sk_sword_y',name:'青元劍訣',book:'《青元劍訣》劍譜',key:'F'},{id:'xue',icon:'🌑',spr:'sk_hex',name:'血影遁',book:'《血影遁》遁術秘笈',key:'T'},{id:'bq',icon:'❄️',spr:'sk_ice',name:'淺藍冰焰',book:'《淺藍冰焰》功法',key:'G'}],
 SHOP_POTS=[['培元丹','pei',15],['聚氣丹','ju',20],['築基丹','zhu',60]],
 AL=[['培元丹','pei',[2,0,0],0,.9],['聚氣丹','ju',[3,0,0],0,.85],['築基丹','zhu',[0,2,0],30,.7]],
-newP=()=>({hp:60,mhp:60,mp:12,mmp:12,lv:1,xp:0,gold:20,cd:0,sk:0,hurt:0,e:{},bag:[],pill:{pei:2,ju:0,zhu:0},herb:[0,0,0],egg:1,pets:[],pa:-1,plot:[null,null,null],bt:0,skills:{},scd:{},iframe:0,shop:[],auction:null,floor:1,chapter:0,face:1}),
-pa=p=>2+p.lv*2,it=o=>`<span style="color:${GR[o.g][1]}">${{w:'🗡️',a:'🛡️',r:'💍'}[o.k]}${GR[o.g][0]}·${o.n}(+${o.v})</span>`,
+newP=()=>({hp:60,mhp:60,mp:12,mmp:12,lv:1,xp:0,gold:20,cd:0,sk:0,hurt:0,e:{},bag:[],pill:{pei:2,ju:0,zhu:0},herb:[0,0,0],egg:1,pets:[],pa:-1,plot:[null,null,null],bt:0,skills:{},scd:{},iframe:0,shop:[],auction:null,floor:1,chapter:0,face:1,rune:{},dq:null,ach:null,ts:0}),
+pa=p=>2+p.lv*2,it=o=>`<span style="color:${GR[o.g][1]}">${{w:'🗡️',a:'🛡️',r:'💍'}[o.k]}${GR[o.g][0]}·${o.n}(+${o.v})${affTxt(o)}</span>`,
 tier=e=>e>=GT[2]?2:e>=GT[1]?1:e>=GT[0]?0:-1,el=t=>(Date.now()-t)/1000,sg=()=>P.plot.map(t=>t?Math.min(50,el(t)/10|0):'x').join()+(Date.now()<P.bt?'b':'');
 let cur='',sig='';
 const T={
@@ -444,13 +585,14 @@ const T={
  +`<hr><small>品級由低到高：法器＜法寶＜古寶＜通天靈寶。飾品同時加成攻防。</small>`},
 物品:()=>`<div class="belt"><div class="belts" onclick="usep('pei')" title="培元丹×${P.pill.pei}">${iconHTML('orb_pei','🧪',22)}<i class="lv">${P.pill.pei}</i></div><div class="belts" onclick="usep('ju')" title="聚氣丹×${P.pill.ju}">${iconHTML('orb_ju','⚗️',22)}<i class="lv">${P.pill.ju}</i></div><div class="belts" onclick="usep('zhu')" title="築基丹×${P.pill.zhu}">${iconHTML('orb_zhu','💊',22)}<i class="lv">${P.pill.zhu}</i></div></div>`
  +`<div class="dbrow"><span>${iconHTML('gold','💎',18)} 靈石</span><b>${P.gold}</b></div>`+HN.map((n,i)=>`<div class="dbrow"><span>${iconHTML(['herb1','herb2','herb3'][i],'🌿',18)} ${n}靈草</span><b>${P.herb[i]}</b></div>`).join('')+`<div class="dbrow"><span>靈獸卵</span><b>🥚${P.egg}</b></div><hr>`
- +`<div class="dbinv">`+(P.bag.map((o,i)=>`<div class="cell" style="border-color:${GR[o.g][1]}"><span>${{w:'🗡️',a:'🛡️',r:'💍'}[o.k]}</span><small>${o.n}+${o.v}</small><button onclick="eq(${i})">裝備</button><button onclick="sell(${i})">售${o.v*3}</button></div>`).join('')||'<span class="empty2">背包內沒有裝備</span>')+`</div><br><small>背包 ${P.bag.length}/20</small>`,
+ +`<div class="dbinv">`+(P.bag.map((o,i)=>`<div class="cell" style="border-color:${GR[o.g][1]}"><span>${{w:'🗡️',a:'🛡️',r:'💍'}[o.k]}</span><small>${o.n}+${o.v}</small><button onclick="eq(${i})">裝備</button>${g.f===0?`<button onclick="sell(${i})">售${o.v*3}</button>`:''}</div>`).join('')||'<span class="empty2">背包內沒有裝備</span>')+`</div><br><small>背包 ${P.bag.length}/20</small>`,
 煉丹:()=>`${iconHTML('cauldron','🔥',36)} 丹爐：以靈草煉丹，有炸爐風險。<br>`+AL.map((a,i)=>`${a[0]}：${a[2].map((n,j)=>n?HN[j]+'靈草×'+n:'').join('')}${a[3]?' 💎'+a[3]:''}（成功率${Math.round(a[4]*100)}%）<button onclick="alch(${i})">煉製</button>`).join('<br>')+`<br><small>培元丹回復氣血，聚氣丹回復靈力，築基丹增加修為。靈草庫存 ${P.herb.join('/')}</small>`,
 靈植:()=>{sig=sg();return P.plot.map((t,i)=>{if(!t)return`空地 <button onclick="plant(${i})">播種 💎5</button>`;const e=el(t),tr=tier(e),nx=GT.find(q=>q>e);
   return`${tr<0?'🌱':['🌿','🍀','🌺'][tr]} ${tr<0?'生長中':HN[tr]+'靈草'}${nx?`（約${Math.ceil((nx-e)/10)*10}秒後${HN[tier(nx)]}）`:'（已達萬年）'} <button onclick="harv(${i})">採收</button>`}).join('<br>')+`<hr><button onclick="bottle()">🍾 掌天瓶催熟</button> ${Date.now()<P.bt?'冷卻 '+Math.ceil((P.bt-Date.now())/1000)+' 秒':'可用'}<br><small>靈草生長越久藥齡越高，離線時仍持續計時。</small>`},
-靈寵:()=>`🥚靈獸卵×${P.egg} <button onclick="hatch()">孵化</button>　百年靈草×${P.herb[0]}<br>`+(P.pets.map((p,i)=>`${p.e}${p.n} Lv${p.lv}·${p.lv<3?'幼體':p.lv<6?'成體':'靈王'} 攻${pa(p)} 修${p.xp}/${p.lv*30} <button onclick="feed(${i})">餵養</button><button onclick="act(${i})">${P.pa==i?'休憩':'出戰'}</button><button onclick="sellPet(${i})">賣出💎${40+p.lv*25}</button>`).join('<br>')||'靈獸袋是空的')+'<br><small>靈獸袋數量不限；出戰靈寵會跟隨並自動攻擊，餵養消耗 1 株百年靈草。賣出可換取靈石，拍賣會偶爾也會標售靈獸。</small>',
+靈寵:()=>`🥚靈獸卵×${P.egg} <button onclick="hatch()">孵化</button>　百年靈草×${P.herb[0]}<br>`+(P.pets.map((p,i)=>`${p.e}${p.n} Lv${p.lv}·${p.lv<3?'幼體':p.lv<6?'成體':'靈王'} 攻${pa(p)} 修${p.xp}/${p.lv*30} <button onclick="feed(${i})">餵養</button><button onclick="act(${i})">${P.pa==i?'休憩':'出戰'}</button>${g.f===0?`<button onclick="sellPet(${i})">賣出💎${40+p.lv*25}</button>`:''}`).join('<br>')||'靈獸袋是空的')+'<br><small>靈獸袋數量不限；出戰靈寵會跟隨並自動攻擊，餵養消耗 1 株百年靈草。賣出可換取靈石，拍賣會偶爾也會標售靈獸。</small>',
 功法:()=>SK.map(s=>{const lvl=P.skills[s.id]||0,d={luo:'瞬間突進並短暫無敵，可用以閃避攻擊',qy:'近身重擊，範圍小但傷害極高',xue:'瞬移至最近敵人身側並造成一記奇襲',bq:'範圍冰封灼寒，兼具傷害與減速'}[s.id];
- return`${iconHTML(s.spr,s.icon,28)} ${s.name}（${s.key}鍵）　${lvl?'Lv'+lvl:'尚未習得'}<br><small>${d}</small>`}).join('<hr>')+'<hr><small>功法秘笈可於胥國坊市、拍賣會購得，亦可能從敵人掉落或寶箱中拾得；同一部秘笈可重複取得以求精進。</small>',
+ return`${iconHTML(s.spr,s.icon,28)} ${s.name}（${s.key}鍵）　${lvl?'Lv'+lvl:'尚未習得'}<br><small>${d}</small>${lvl?runeUI(s,lvl):''}`}).join('<hr>')+'<hr><small>功法秘笈可於胥國坊市、拍賣會購得，亦可能從敵人掉落或寶箱中拾得；同一部秘笈可重複取得以求精進。</small>',
+任務:()=>questUI(),
 章回:()=>{const QN={explore:'🗺️探索',rescue:'🙇救援',treasure:'🏆奪寶',guard:'🛡️護法'},cur=CH[P.chapter];
  const zones=cur.zones.map((z,i)=>`${g.f&&g.zi===i?'👉 ':''}${i+1===cur.zones.length?'⚔️ ':QN[z.quest.t].slice(0,2)+' '}<b>${z.n}</b>（${QN[z.quest.t]}）${i+1===cur.zones.length?`　首領：${iconHTML(MOSPR[cur.boss.n],cur.boss.e,22)}${cur.boss.n}`:''}<br><small>${z.quest.d}</small>`).join('<hr>');
  const list=CH.map((c,i)=>`${i<P.chapter?'✅':i===P.chapter?'▶️':'🔒'} 第${i+1}章・${c.town}篇`).join('<br>');
@@ -467,24 +609,28 @@ const T={
  :a.type=='pet'?`${a.t[0]} ${a.t[1]}（Lv${a.lv}）`
  :`${iconHTML({pei:'orb_pei',ju:'orb_ju',zhu:'orb_zhu'}[a.pk],'🧪',26)} ${PN[a.pk]}×${a.qty}`;
  return`💎靈石 ${P.gold}<hr>${iconHTML('judge','🏮',30)} 🏆 本場標的<br>${lbl}<br>起標價 💎${a.price} <button onclick="buyAuction()">競得</button><hr><small>拍賣品皆為坊市精選珍稀之物，包含裝備、功法、靈獸與靈丹，數量有限，錯過須待下次入城重新開拍。</small>`},
-系統:()=>`<button onclick="portalTown();cls()">🏯 返回胥國</button><br><button onclick="expo()">📤 匯出存檔 (JSON)</button> <label class="fb">📥 匯入存檔<input type="file" accept=".json,application/json" hidden onchange="impf(this.files[0])"></label><br><button onclick="togMusic()">🎵 ${(MON&&(MST||tm))?'關閉':'開啟'}配樂</button><div style="font-size:11px;color:#999;margin:2px 0">配樂：Tozan、Paul Wortmann、JaggedStone（OpenGameArt，CC0）；無法載入時改用 8-bit 音樂</div>${dp?' <button onclick="dp.prompt()">📲 安裝到裝置</button>':''}<br><button onclick="if(confirm('清除所有進度並重新開始？')){localStorage.removeItem('xxl');init(1,0);cls()}">🗑️ 重新開始</button><br><small>進度每 8 秒自動存於瀏覽器。iOS 請用 Safari「分享→加入主畫面」安裝。也可隨時按 🌀（H 鍵）從任意關卡瞬間返城，返城後由城中傳送陣可直接回到離開時的關卡。</small>`};
-function pn(t){cur=t;$('pn').hidden=false;$('tb').innerHTML=TB.map(k=>`<button ${k==t?'class="on"':''} onclick="pn('${k}')">${k}</button>`).join('');$('pc').innerHTML=T[t]();held.clear();ax();const m=$('menuGrp');if(m&&!m.hidden){m.hidden=true;$('mbtn').textContent='☰';$('mbtn').classList.remove('on')}}
+系統:()=>`<button onclick="portalTown();cls()">🏯 返回胥國</button><br><button onclick="expo()">📤 匯出存檔 (JSON)</button> <label class="fb">📥 匯入存檔<input type="file" accept=".json,application/json" hidden onchange="impf(this.files[0])"></label><br><button onclick="togMusic()">🎵 ${(MON&&(MST||tm))?'關閉':'開啟'}配樂</button><div style="font-size:11px;color:#999;margin:2px 0">配樂：Tozan、Paul Wortmann、JaggedStone（OpenGameArt，CC0）；無法載入時改用 8-bit 音樂</div>${dp?' <button onclick="dp.prompt()">📲 安裝到裝置</button>':''}<br><button onclick="if(confirm('清除所有進度並重新開始？')){localStorage.removeItem('xxl');init(1,0);cls()}">🗑️ 重新開始</button>${setUI()}<br><small>進度每 8 秒自動存於瀏覽器。iOS 請用 Safari「分享→加入主畫面」安裝。也可隨時按 🌀（H 鍵）從任意關卡瞬間返城，返城後由城中傳送陣可直接回到離開時的關卡。</small>`};
+var NPCT=null;
+const SHT=['丹藥','兵器','秘笈','拍賣'];
+function TOWN(){if(g&&g.f===0)return true;say('⛔ 只能在城鎮向 NPC 交易，請先返城');return false}
+function nearNpc(t){if(!g||g.f!==0||!g.npc)return false;for(var i=0;i<g.npc.length;i++)if(g.npc[i].t===t&&dist(g.npc[i],P)<3)return true;return false}
+function pn(t){if(SHT.indexOf(t)>=0&&!nearNpc(t)){say('須在城鎮中靠近對應的 NPC，才能與其交易');return}cur=t;$('pn').hidden=false;$('tb').innerHTML=(SHT.indexOf(t)>=0?[t]:TB.filter(k=>SHT.indexOf(k)<0)).map(k=>`<button ${k==t?'class="on"':''} onclick="pn('${k}')">${k}</button>`).join('');$('pc').innerHTML=T[t]();held.clear();ax();const m=$('menuGrp');if(m&&!m.hidden){m.hidden=true;$('mbtn').textContent='☰';$('mbtn').classList.remove('on')}}
 function cls(){$('pn').hidden=true;cur='';npcCD=1.2}
 setInterval(()=>{if(cur=='靈植'&&!$('pn').hidden&&sig!=sg())$('pc').innerHTML=T.靈植()},1000);
 function eq(i){const o=P.bag[i],old=P.e[o.k];P.e[o.k]=o;P.bag.splice(i,1);if(old)P.bag.push(old);say(`裝備 ${it(o)}`);pn('物品')}
 function uneq(k){if(P.bag.length>=20)return say('背包已滿');P.bag.push(P.e[k]);delete P.e[k];pn('裝備')}
-function sell(i){P.gold+=P.bag[i].v*3;P.bag.splice(i,1);pn('物品')}
-function buyPot(k,price){if(P.gold<price)return say('靈石不足');P.gold-=price;P.pill[k]++;say('購得 '+({pei:'培元丹',ju:'聚氣丹',zhu:'築基丹'}[k]));pn('丹藥')}
-function buyGear(i){const o=P.shop[i];if(!o)return;const price=o.v*5;if(P.gold<price)return say('靈石不足');
+function sell(i){if(!TOWN())return;P.gold+=P.bag[i].v*3;P.bag.splice(i,1);pn('物品')}
+function buyPot(k,price){if(!TOWN())return;if(P.gold<price)return say('靈石不足');P.gold-=price;P.pill[k]++;say('購得 '+({pei:'培元丹',ju:'聚氣丹',zhu:'築基丹'}[k]));pn('丹藥')}
+function buyGear(i){if(!TOWN())return;const o=P.shop[i];if(!o)return;const price=o.v*5;if(P.gold<price)return say('靈石不足');
  if(!P.e[o.k]||P.bag.length<20){P.gold-=price;if(!P.e[o.k])P.e[o.k]=o;else P.bag.push(o);P.shop[i]=null;say(`購得 ${it(o)}`)}else say('背包已滿');pn('兵器')}
-function buySkill(id){const s=SK.find(v=>v.id==id),lvl=P.skills[id]||0,price=200+lvl*250;
+function buySkill(id){if(!TOWN())return;const s=SK.find(v=>v.id==id),lvl=P.skills[id]||0,price=200+lvl*250;
  if(P.gold<price)return say('靈石不足，此秘笈需 💎'+price);P.gold-=price;P.skills[id]=lvl+1;say(`📜 購得${s.book}，${lvl?'功法精進至 Lv'+(lvl+1):'習得新功法 '+s.icon+s.name}`);pn('秘笈')}
 function rollAuction(){const r=Math.random();
  if(r<.28){const s=SK[R(SK.length)],lvl=P.skills[s.id]||0;P.auction={type:'skill',id:s.id,price:600+lvl*300}}
  else if(r<.56){const o=mkGear(3+R(2));P.auction={type:'gear',o,price:o.v*14}}
  else if(r<.78){const t=PT[R(PT.length)],lv=1+R(3);P.auction={type:'pet',t,lv,price:300+lv*220}}
  else{const pk=['pei','ju','zhu'][R(3)],qty=3+R(6);P.auction={type:'pill',pk,qty,price:({pei:15,ju:25,zhu:45})[pk]*qty}}}
-function buyAuction(){const a=P.auction;if(!a)return;if(P.gold<a.price)return say('靈石不足，此標的需 💎'+a.price);
+function buyAuction(){if(!TOWN())return;const a=P.auction;if(!a)return;if(P.gold<a.price)return say('靈石不足，此標的需 💎'+a.price);
  P.gold-=a.price;
  if(a.type=='skill'){const s=SK.find(v=>v.id==a.id),lvl=P.skills[a.id]||0;P.skills[a.id]=lvl+1;say(`🏆 拍得${s.book}！${lvl?'功法精進至 Lv'+(lvl+1):'習得新功法 '+s.icon+s.name}`)}
  else if(a.type=='gear'){const o=a.o;if(!P.e[o.k])P.e[o.k]=o;else if(P.bag.length<20)P.bag.push(o);else P.gold+=o.v*3;say(`🏆 拍得 ${it(o)}！`)}
@@ -498,19 +644,19 @@ function harv(i){const tr=P.plot[i]?tier(el(P.plot[i])):-1;if(tr<0)return say('�
 function bottle(){if(Date.now()<P.bt)return say('掌天瓶尚在冷卻');P.plot=P.plot.map(t=>t&&t-120000);P.bt=Date.now()+90000;say('🍾 掌天瓶綠液滴落，靈草飛速生長！');pn('靈植')}
 function hatch(){if(P.egg<1)return say('無法孵化（沒有靈獸卵）');P.egg--;const t=PT[P.pets.length?R(PT.length):0];P.pets.push({e:t[0],n:t[1],lv:1,xp:0});say(`🥚 孵出 ${t[0]}${t[1]}！`);pn('靈寵')}
 function feed(i){if(P.herb[0]<1)return say('缺少百年靈草');P.herb[0]--;pxp(P.pets[i],30);pn('靈寵')}
-function sellPet(i){const p=P.pets[i];if(!p)return;const price=40+p.lv*25;P.pets.splice(i,1);
+function sellPet(i){if(!TOWN())return;const p=P.pets[i];if(!p)return;const price=40+p.lv*25;P.pets.splice(i,1);
  if(P.pa==i)P.pa=-1;else if(P.pa>i)P.pa--;
  P.gold+=price;say(`已賣出 ${p.e}${p.n}（Lv${p.lv}），得 💎${price}`);pn('靈寵')}
 function act(i){P.pa=P.pa==i?-1:i;pp={x:P.x,y:P.y,cd:0};pn('靈寵')}
-function expo(){const b=new Blob([JSON.stringify({v:1,f:g.f,P},null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='xiuxian-save.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),999);say('📤 已匯出存檔')}
+function expo(){const b=new Blob([JSON.stringify({v:1,f:g.f,P},null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='xiuxian-save.json';a.click();S.lastExp=Date.now();saveS();setTimeout(()=>URL.revokeObjectURL(a.href),999);say('📤 已匯出存檔')}
 function impf(f){if(f)f.text().then(t=>{try{load(JSON.parse(t));cls()}catch(_e){say('❌ 存檔格式錯誤')}})}
-function load(o){if(!o||!o.P||typeof o.P.lv!='number')throw 0;P=Object.assign(newP(),o.P);if(P.hp<=0)P.hp=P.mhp;if(P.chapter>=CH.length||P.chapter<0)P.chapter=0;const zc=CH[P.chapter].zones.length;init(0,o.f>0&&o.f<=zc?o.f:1);say('存檔已載入')}
+function load(o){if(!o||!o.P||typeof o.P.lv!='number')throw 0;P=Object.assign(newP(),o.P);if(P.hp<=0)P.hp=P.mhp;if(P.chapter>=CH.length||P.chapter<0)P.chapter=0;const zc=CH[P.chapter].zones.length;init(0,o.f>0&&o.f<=zc?o.f:1);say('存檔已載入');calcOff();setTimeout(applyOff,400)}
 
 /* 輸入：鍵盤 / 虛擬搖桿 / 按鈕 */
 const held=new Set(),ax=()=>{KX=(held.has('d')||held.has('arrowright'))-(held.has('a')||held.has('arrowleft'));KY=(held.has('s')||held.has('arrowdown'))-(held.has('w')||held.has('arrowup'))};
 onkeydown=e=>{au();const k=e.key.toLowerCase();if(dead&&!e.repeat)return rez();
  if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){e.preventDefault();held.add(k);ax()}
- else if(k==' '||k=='e'){e.preventDefault();sword()}else if(k=='q')pot();else if(k=='h')portalTown();else if(k=='r')castLuo();else if(k=='f')castQY();else if(k=='t')castXue();else if(k=='g')castBQ();else if(k=='k')pn('功法');else if(k=='m')togMusic();else if(k=='i')pn('物品');else if(k=='c')pn('裝備');else if(k=='escape')cls()};
+ else if(k==' '||k=='e'){e.preventDefault();sword()}else if(k=='q')pot();else if(k=='h')portalTown();else if(k=='r')castLuo();else if(k=='f')castQY();else if(k=='t')castXue();else if(k=='g')castBQ();else if(k=='k')pn('功法');else if(k=='m')togMusic();else if(k=='n'){$('bm').hidden?openBig():closeBig()}else if(k=='y')stog('auto');else if(k=='b')navTarget();else if(k=='i')pn('物品');else if(k=='c')pn('裝備');else if(k=='escape')cls()};
 onkeyup=e=>{held.delete(e.key.toLowerCase());ax()};onblur=()=>{held.clear();ax()};
 const jv=$('joy'),kn=jv.firstChild;
 function jm(e){const r=jv.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2,m=Math.hypot(dx,dy),k=Math.min(1,m/(r.width/2))/(m||1);JX=dx*k;JY=dy*k;kn.style.transform=`translate(${JX*40}px,${JY*40}px)`}
@@ -520,7 +666,9 @@ jv.onpointerup=jv.onpointercancel=()=>{JX=JY=0;kn.style.transform=''};
 $('bs').onpointerdown=e=>{e.preventDefault();au();sword()};$('bp').onpointerdown=e=>{e.preventDefault();au();pot()};$('bh').onpointerdown=e=>{e.preventDefault();au();portalTown()};
 $('bl').onpointerdown=e=>{e.preventDefault();au();castLuo()};$('bj').onpointerdown=e=>{e.preventDefault();au();castQY()};
 $('bx').onpointerdown=e=>{e.preventDefault();au();castXue()};$('bc').onpointerdown=e=>{e.preventDefault();au();castBQ()};
-cv.onpointerdown=()=>{if(dead)rez()};
+cv.onpointerdown=e=>{if(dead)return rez();if(!g||!g.npc||!$('pn').hidden)return;var r=cv.getBoundingClientRect(),mx=(e.clientX-r.left)*(cv.width/r.width),my=(e.clientY-r.top)*(cv.height/r.height);
+ for(var i=0;i<g.npc.length;i++){var n=g.npc[i],sx=(W/ZM/2+(n.x-n.y)*32-camX)*ZM,sy=(H/ZM/2+(n.x+n.y)*16-camY)*ZM-22;
+  if(Math.abs(mx-sx)<45&&Math.abs(my-sy)<60){if(dist(n,P)<2.2){au();pn(n.t)}else{NPCT=n;goTo(n.x,n.y+.6)}return}}};
 
 /* PWA */
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e});
@@ -529,9 +677,12 @@ if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.
 
 document.querySelectorAll('#mid [data-t]').forEach(b=>b.onclick=()=>pn(b.dataset.t));
 $('bs').innerHTML=iconHTML('sk_sword_g','⚔️',26);$('bp').innerHTML=iconHTML('potion','🧪',26);$('bh').innerHTML=iconHTML('scroll4','🌀',26);
+$('mm').onclick=openBig;$('bmap').onclick=()=>{$('menuGrp').hidden=true;$('mbtn').textContent='☰';openBig()};$('bnav').onclick=()=>{$('menuGrp').hidden=true;$('mbtn').textContent='☰';navTarget()};$('bauto').onclick=()=>stog('auto');
+$('bmc').onclick=e=>{const c=$('bmc'),r=c.getBoundingClientRect(),sc=c._sc*(r.width/c.width),tx=(e.clientX-r.left)/sc,ty=(e.clientY-r.top)/sc;closeBig();goTo(tx,ty)};
+applyS();if(!S.tut)setTimeout(()=>{TI=0;showTut()},600);
 $('mbtn').onclick=()=>{const m=$('menuGrp'),open=m.hidden;m.hidden=!open;$('mbtn').textContent=open?'✕':'☰';$('mbtn').classList.toggle('on',open)};
 try{const v=localStorage.getItem('xxl');if(v)load(JSON.parse(v));else{init(1,0);say('韓立踏上仙途，落腳於七玄門。WASD/搖桿移動，靠近丹藥閣／兵器閣／秘笈閣／拍賣會 NPC 可購物與購法，東南傳送陣可下山歷練。全篇共五章，每章一城、三關，末關擊敗首領即解鎖下一章新城鎮，詳見「章回」分頁。空白=青竹蜂雲劍，Q=培元丹，H=縮地符瞬間返城，R/F/T/G=功法(需先習得，HUD 中已習得的功法會亮起並顯示等級)，K=功法，I=物品，C=裝備')}}catch(_e){init(1,0)}
-setInterval(()=>{try{if(!dead)localStorage.setItem('xxl',JSON.stringify({v:1,f:g.f,P}))}catch(_e){}},8000);
+setInterval(()=>{try{if(!dead)P.ts=Date.now();localStorage.setItem('xxl',JSON.stringify({v:1,f:g.f,P}))}catch(_e){}},8000);
 requestAnimationFrame(tick);
 </script></body></html>
 
